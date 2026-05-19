@@ -1,0 +1,35 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# FastAPI / tooling
+*.log
+
+# Node (frontend)
+node_modules/
+dist/
+build/
+
+# Docker volumes / data
+*.volume
+influx_data/
+grafana_data/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# env files
+.env
+.env.local
+.env.production
+
+# testing
+.pytest_cache/
+.coverage
