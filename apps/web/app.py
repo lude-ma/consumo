@@ -44,6 +44,15 @@ def enter(meter: str):
         return redirect(url_for("index"))
 
     meta = METERS[meter]
+    last_reading = None
+
+    try:
+        rows = api("GET", f"/api/v1/meters/{meter}/readings",
+                   params={"limit": 1, "order": "desc"}).get("data", [])
+        if rows:
+            last_reading = rows[0]
+    except Exception:
+        pass  # non-critical — form still works without it
 
     if request.method == "POST":
         try:
@@ -72,6 +81,7 @@ def enter(meter: str):
             flash("Unbekannter Fehler beim Speichern.", "error")
 
     return render_template("enter.html", meter=meter, meta=meta,
+                           last_reading=last_reading,
                            type_labels=METER_TYPE_LABELS)
 
 

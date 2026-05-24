@@ -41,6 +41,16 @@
 
   .hint { font-size: 0.8rem; color: var(--muted); margin-top: 0.3rem; }
   .form-actions { display: flex; gap: 0.75rem; margin-top: 1.75rem; }
+
+  .last-reading {
+    display: flex; align-items: center; gap: 0.75rem;
+    background: var(--bg); border: 1px solid var(--border);
+    border-radius: 8px; padding: 0.65rem 1rem;
+    margin-bottom: 1.5rem; font-size: 0.85rem;
+  }
+  .last-label { color: var(--muted); text-transform: uppercase; font-size: 0.72rem; letter-spacing: 0.06em; }
+  .last-value { font-family: 'Space Mono', monospace; font-weight: 700; color: var(--text); }
+  .last-date  { color: var(--muted); margin-left: auto; font-size: 0.8rem; }
 </style>
 {% endblock %}
 
@@ -57,22 +67,31 @@
     {{ type_labels[meta.meter_type][1] }} {{ type_labels[meta.meter_type][0] }}
   </span>
 
+  {% if last_reading %}
+  <div class="last-reading">
+    <span class="last-label">Letzter Wert</span>
+    <span class="last-value">{{ last_reading.value | round(3) }} {{ meta.unit }}</span>
+    <span class="last-date">{{ last_reading.timestamp[:16] | replace("T", " ") }}</span>
+  </div>
+  {% endif %}
+
   <form method="POST">
     <div class="field">
+      {% set ph = "Letzter: " ~ (last_reading.value | round(3) | string) if last_reading else meta.placeholder %}
       {% if meta.meter_type == "counter" %}
         <label>Zählerstand ({{ meta.unit }})</label>
-        <input type="number" name="value" step="any" placeholder="{{ meta.placeholder }}" required autofocus>
+        <input type="number" name="value" step="any" placeholder="{{ ph }}" required autofocus>
         <p class="hint">{{ meta.hint }}</p>
       {% elif meta.meter_type == "storage" %}
         <label>Aktueller Füllstand ({{ meta.unit }})</label>
-        <input type="number" name="value" step="any" placeholder="{{ meta.placeholder }}" required autofocus>
+        <input type="number" name="value" step="any" placeholder="{{ ph }}" required autofocus>
         <div class="storage-hint">
           <span class="badge-up">▲ Wert höher als vorher = Befüllung</span>
           <span class="badge-down">▼ Wert tiefer als vorher = Verbrauch</span>
         </div>
       {% else %}
         <label>Messwert ({{ meta.unit }})</label>
-        <input type="number" name="value" step="any" placeholder="{{ meta.placeholder }}" required autofocus>
+        <input type="number" name="value" step="any" placeholder="{{ ph }}" required autofocus>
         <p class="hint">{{ meta.hint }}</p>
       {% endif %}
     </div>
