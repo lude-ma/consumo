@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% block title %}{{ meta.label }} – Verlauf{% endblock %}
+
+{% block head %}
+<style>
+  .back { display: inline-flex; align-items: center; gap: 0.4rem; color: var(--muted); text-decoration: none; font-size: 0.9rem; margin-bottom: 2rem; }
+  .back:hover { color: var(--text); }
+
+  .page-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem; }
+  .page-title  { display: flex; align-items: center; gap: 0.5rem; font-size: 1.5rem; font-weight: 800; }
+
+  .summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
+  .summary-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 1rem 1.25rem; }
+  .summary-card .s-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); margin-bottom: 0.3rem; }
+  .summary-card .s-val   { font-family: 'Space Mono', monospace; font-size: 1.2rem; font-weight: 700; }
+
+  table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+  th { text-align: left; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); padding: 0.5rem 1rem; border-bottom: 1px solid var(--border); }
+  td { padding: 0.85rem 1rem; border-bottom: 1px solid var(--border); vertical-align: middle; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: rgba(255,255,255,.03); }
+
+  .val { font-family: 'Space Mono', monospace; font-weight: 700; }
+  .note-badge { background: var(--border); color: var(--muted); padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.8rem; }
+  .empty { text-align: center; padding: 3rem; color: var(--muted); }
+  .empty .emoji { font-size: 2.5rem; margin-bottom: 0.75rem; }
+</style>
+{% endblock %}
+
+{% block content %}
+<a href="/" class="back">← Übersicht</a>
+
+<div class="page-header">
+  <div class="page-title"><span>{{ meta.icon }}</span><span>{{ meta.label }}</span></div>
+  <a href="/enter/{{ meter }}" class="btn btn-primary">+ Wert eingeben</a>
+</div>
+
+{# --- Stats summary --- #}
+{% if stats %}
+<div class="summary">
+  {% if meta.meter_type.value == "counter" %}
+    <div class="summary-card"><div class="s-label">Letzte 30 Tage</div>    <div class="s-val">{{ (stats.last_30d or 0) | round(1) }} {{ meta.unit }}</div></div>
+    <div class="summary-card"><div class="s-label">Letzte 365 Tage</div>   <div class="s-val">{{ (stats.last_365d or 0) | round(1) }} {{ meta.unit }}</div></div>
+    <div class="summary-card"><div class="s-label">Ø pro Monat</div>       <div class="s-val">{{ (stats.avg_per_month or 0) | round(1) }} {{ meta.unit }}</div></div>
+    <div class="summary-card"><div class="s-label">Ø pro Jahr</div>        <div class="s-val">{{ (stats.avg_per_year or 0) | round(0) | int }} {{ meta.unit }}</div></div>
+  {% elif meta.meter_type.value == "storage" %}
+    <div class="summary-card"><div class="s-label">Aktueller Füllstand</div>  <div class="s-val" style="color:#3b82f6">{{ (stats.current_level or 0) | round(0) | int }} {{ meta.unit }}</div></div>
+    <div class="summary-card"><div class="s-label">▲ Gesamt befüllt</div>     <div class="s-val" style="color:#22c55e">{{ (stats.total_refilled or 0) | round(0) | int }} {{ meta.unit }}</div></div>
+    <div class="summary-card"><div class="s-label">▼ Gesamt verbraucht</div>  <div class="s-val" style="color:#ef4444">{{ (stats.total_consumed or 0) | round(0) | int }} {{ meta.unit }}</div></div>
+    <div class="summary-card"><div class="s-label">Ø Verbrauch / Monat</div>  <div class="s-val">{{ (stats.avg_consumed_per_month or 0) | round(0) | int }} {{ meta.unit }}</div></div>
+  {% else %}
+    <div class="summary-card"><div class="s-label">Letzter Wert</div><div class="s-val">{{ (stats.last or 0) | round(2) }} {{ meta.unit }}</div></div>
+    <div class="summary-card"><div class="s-label">Min</div>         <div class="s-val">{{ (stats.min or 0)  | round(2) }} {{ meta.unit }}</div></div>
+    <div class="summary-card"><div class="s-label">Max</div>         <div class="s-val">{{ (stats.max or 0)  | round(2) }} {{ meta.unit }}</div></div>
+    <div class="summary-card"><div class="s-label">Ø</div>           <div class="s-val">{{ (stats.mean or 0) | round(2) }} {{ meta.unit }}</div></div>
+  {% endif %}
+</div>
+{% endif %}
+
+{# --- Readings table --- #}
+{% if rows %}
+<table>
+  <thead>
+    <tr>
+      <th>Datum</th>
+      <th>Wert</th>
+      <th>Notiz</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for row in rows %}
+    <tr>
+      <td>{{ row.timestamp[:16] | replace("T", " ") }}</td>
+      <td><span class="val">{{ row.value | round(3) }} {{ row.unit }}</span></td>
+      <td>{% if row.note %}<span class="note-badge">{{ row.note }}</span>{% else %}–{% endif %}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<div class="empty">
+  <div class="emoji">📭</div>
+  <p>Noch keine Einträge vorhanden.</p>
+</div>
+{% endif %}
+{% endblock %}

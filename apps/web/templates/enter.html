@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+{% block title %}{{ meta.label }} – Wert eingeben{% endblock %}
+
+{% block head %}
+<style>
+  .back { display: inline-flex; align-items: center; gap: 0.4rem; color: var(--muted); text-decoration: none; font-size: 0.9rem; margin-bottom: 2rem; }
+  .back:hover { color: var(--text); }
+
+  .form-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 2rem; max-width: 500px; }
+
+  .form-header { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem; }
+  .form-header .icon { font-size: 2rem; }
+  .form-header h2 { font-size: 1.4rem; font-weight: 800; }
+
+  .type-badge {
+    display: inline-flex; align-items: center; gap: 0.3rem;
+    padding: 0.2rem 0.6rem; border-radius: 99px;
+    font-size: 0.75rem; font-weight: 600; margin-bottom: 1.75rem;
+  }
+  .type-counter { background: rgba(245,158,11,.12); color: #f59e0b; }
+  .type-storage { background: rgba(161,98,7,.15);   color: #d97706; }
+  .type-sensor  { background: rgba(99,102,241,.15); color: #818cf8; }
+
+  .field { margin-bottom: 1.25rem; }
+  label { display: block; font-size: 0.85rem; color: var(--muted); margin-bottom: 0.4rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
+
+  input[type="number"], input[type="datetime-local"], input[type="text"] {
+    width: 100%; background: var(--bg); border: 1px solid var(--border);
+    border-radius: 6px; color: var(--text);
+    font-family: 'Space Mono', monospace; font-size: 1rem;
+    padding: 0.7rem 1rem; transition: border-color 0.2s; -webkit-appearance: none;
+  }
+  input:focus { outline: none; border-color: var(--strom); }
+
+  /* Storage: colour-coded refill/consumption hint */
+  .storage-hint {
+    display: flex; gap: 0.5rem; margin-top: 0.4rem; flex-wrap: wrap;
+  }
+  .badge-up   { background: rgba(34,197,94,.12);  color: #22c55e; padding: 0.2rem 0.6rem; border-radius: 4px; font-size: 0.78rem; }
+  .badge-down { background: rgba(239,68,68,.12);  color: #ef4444; padding: 0.2rem 0.6rem; border-radius: 4px; font-size: 0.78rem; }
+
+  .hint { font-size: 0.8rem; color: var(--muted); margin-top: 0.3rem; }
+  .form-actions { display: flex; gap: 0.75rem; margin-top: 1.75rem; }
+</style>
+{% endblock %}
+
+{% block content %}
+<a href="/" class="back">← Übersicht</a>
+
+<div class="form-card">
+  <div class="form-header">
+    <span class="icon">{{ meta.icon }}</span>
+    <h2>{{ meta.label }} – Wert eingeben</h2>
+  </div>
+
+  <span class="type-badge type-{{ meta.meter_type }}">
+    {{ type_labels[meta.meter_type][1] }} {{ type_labels[meta.meter_type][0] }}
+  </span>
+
+  <form method="POST">
+    <div class="field">
+      {% if meta.meter_type == "counter" %}
+        <label>Zählerstand ({{ meta.unit }})</label>
+        <input type="number" name="value" step="any" placeholder="{{ meta.placeholder }}" required autofocus>
+        <p class="hint">{{ meta.hint }}</p>
+      {% elif meta.meter_type == "storage" %}
+        <label>Aktueller Füllstand ({{ meta.unit }})</label>
+        <input type="number" name="value" step="any" placeholder="{{ meta.placeholder }}" required autofocus>
+        <div class="storage-hint">
+          <span class="badge-up">▲ Wert höher als vorher = Befüllung</span>
+          <span class="badge-down">▼ Wert tiefer als vorher = Verbrauch</span>
+        </div>
+      {% else %}
+        <label>Messwert ({{ meta.unit }})</label>
+        <input type="number" name="value" step="any" placeholder="{{ meta.placeholder }}" required autofocus>
+        <p class="hint">{{ meta.hint }}</p>
+      {% endif %}
+    </div>
+
+    <div class="field">
+      <label>Datum & Uhrzeit</label>
+      <input type="datetime-local" name="date" id="dateInput">
+      <p class="hint">Leer lassen für jetzt</p>
+    </div>
+
+    <div class="field">
+      <label>Notiz (optional)</label>
+      <input type="text" name="note" placeholder="{% if meta.meter_type == 'storage' %}z.B. Lieferung Firma XY, 3000 kg{% else %}z.B. nach Urlaub{% endif %}">
+    </div>
+
+    <div class="form-actions">
+      <button type="submit" class="btn btn-primary">Speichern</button>
+      <a href="/history/{{ meter }}" class="btn btn-ghost">Verlauf ansehen</a>
+    </div>
+  </form>
+</div>
+
+<script>
+  const d = new Date(), pad = n => String(n).padStart(2,'0');
+  document.getElementById('dateInput').value =
+    `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+</script>
+{% endblock %}

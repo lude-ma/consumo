@@ -1,0 +1,76 @@
+version: "3.8"
+
+services:
+  influxdb:
+    image: influxdb:2.7
+    restart: unless-stopped
+    volumes:
+      - influxdb-data:/var/lib/influxdb2
+      - influxdb-config:/etc/influxdb2
+    environment:
+      - DOCKER_INFLUXDB_INIT_MODE=setup
+      - DOCKER_INFLUXDB_INIT_USERNAME=${INFLUXDB_ADMIN_USER:-admin}
+      - DOCKER_INFLUXDB_INIT_PASSWORD=${INFLUXDB_ADMIN_PASSWORD}
+      - DOCKER_INFLUXDB_INIT_ORG=${INFLUXDB_ORG:-home}
+      - DOCKER_INFLUXDB_INIT_BUCKET=${INFLUXDB_BUCKET:-energy}
+      - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=${INFLUXDB_TOKEN}
+    networks:
+      - consumo-net
+
+  grafana:
+    image: grafana/grafana:10.4.0
+    restart: unless-stopped
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ../infrastructure/grafana/provisioning:/etc/grafana/provisioning
+      - ../infrastructure/grafana/dashboards:/var/lib/grafana/dashboards
+    environment:
+      - GF_SECURITY_ADMIN_USER=${GRAFANA_ADMIN_USER:-admin}
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_ADMIN_PASSWORD}
+      - GF_USERS_ALLOW_SIGN_UP=false
+      - INFLUXDB_TOKEN=${INFLUXDB_TOKEN}
+      - INFLUXDB_ORG=${INFLUXDB_ORG:-home}
+      - INFLUXDB_BUCKET=${INFLUXDB_BUCKET:-energy}
+    depends_on:
+      - influxdb
+    networks:
+      - consumo-net
+
+  api:
+    build:
+      context: ../apps
+      dockerfile: api/Dockerfile
+    restart: unless-stopped
+    environment:
+      - INFLUXDB_URL=http://influxdb:8086
+      - INFLUXDB_TOKEN=${INFLUXDB_TOKEN}
+      - INFLUXDB_ORG=${INFLUXDB_ORG:-home}
+      - INFLUXDB_BUCKET=${INFLUXDB_BUCKET:-energy}
+      - API_KEYS=${API_KEYS}
+    depends_on:
+      - influxdb
+    networks:
+      - consumo-net
+
+  web:
+    build:
+      context: ../apps
+      dockerfile: web/Dockerfile
+    restart: unless-stopped
+    environment:
+      - API_URL=http://api:8200
+      - API_KEY=${API_KEY_WEB}
+      - SECRET_KEY=${SECRET_KEY}
+    depends_on:
+      - api
+    networks:
+      - consumo-net
+
+volumes:
+  influxdb-data:
+  influxdb-config:
+  grafana-data:
+
+networks:
+  consumo-net:
+    driver: bridge

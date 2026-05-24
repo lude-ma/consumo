@@ -1,0 +1,40 @@
+version: "3.8"
+
+# Dev ports: Web 8101 | Grafana 3001 | InfluxDB 8087 | API 8201
+services:
+  influxdb:
+    container_name: consumo-dev-influxdb
+    ports:
+      - "8087:8086"
+    restart: "no"
+
+  grafana:
+    container_name: consumo-dev-grafana
+    ports:
+      - "3001:3000"
+    restart: "no"
+    environment:
+      - GF_SERVER_ROOT_URL=http://localhost:3001
+
+  api:
+    container_name: consumo-dev-api
+    ports:
+      - "8201:8200"   # exposed in dev for direct curl/testing
+    restart: "no"
+    volumes:
+      - ../apps/api:/app/api
+      - ../apps/common:/app/common
+    environment:
+      - FLASK_DEBUG=1
+
+  web:
+    container_name: consumo-dev-web
+    ports:
+      - "8101:8100"
+    restart: "no"
+    volumes:
+      - ../apps/web:/app/web
+      - ../apps/common:/app/common
+    environment:
+      - API_URL=http://api:8200
+      - FLASK_DEBUG=1

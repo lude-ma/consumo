@@ -26,9 +26,8 @@ grafana_data/
 Thumbs.db
 
 # env files
-.env
-.env.local
-.env.production
+.env*
+!.env.example
 
 # testing
 .pytest_cache/
