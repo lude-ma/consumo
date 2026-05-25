@@ -83,5 +83,8 @@
   "meter_pellets_placeholder": "z.B. 2500",
   "meter_type_counter": "Zählerstand",
   "meter_type_storage": "Lagerbestand",
-  "meter_type_sensor": "Messwert"
+  "meter_type_sensor": "Messwert",
+  "meter_type_icon_counter": "📟",
+  "meter_type_icon_storage": "🗄️",
+  "meter_type_icon_sensor": "🌡️"
 }

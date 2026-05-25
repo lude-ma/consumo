@@ -83,5 +83,8 @@
   "meter_pellets_placeholder": "e.g. 2500",
   "meter_type_counter": "Meter reading",
   "meter_type_storage": "Storage level",
-  "meter_type_sensor": "Sensor value"
+  "meter_type_sensor": "Sensor value",
+  "meter_type_icon_counter": "📟",
+  "meter_type_icon_storage": "🗄️",
+  "meter_type_icon_sensor": "🌡️"
 }
