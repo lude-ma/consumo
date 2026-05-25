@@ -30,6 +30,10 @@ dev-up:
 dev-down:
 	docker compose -p $(DEV_PROJECT) $(DEV_FILES) down
 
+dev-rebuild:
+	docker compose -p $(DEV_PROJECT) $(DEV_FILES) down -v
+	docker compose -p $(DEV_PROJECT) $(DEV_FILES) --env-file .env.dev up -d --build
+
 dev-logs:
 	docker compose -p $(DEV_PROJECT) $(DEV_FILES) logs -f
 
