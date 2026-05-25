@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}{{ t.app_name }} – {{ meta.label }}{% endblock %}
+{% block title %}{{ t.app_name }} – {{ t["meter_" ~ meter ~ "_label"] }}{% endblock %}
 
 {% block head %}
 <style>
@@ -24,30 +24,35 @@
 {% endblock %}
 
 {% block content %}
+{% set meter_label = t["meter_" ~ meter ~ "_label"] %}
+
 <a href="/" class="back">{{ t.back }}</a>
 
 <div class="page-header">
-  <div class="page-title"><span>{{ meta.icon }}</span><span>{{ meta.label }} – {{ t.history_title }}</span></div>
+  <div class="page-title">
+    <span>{{ meta.icon }}</span>
+    <span>{{ meter_label }} – {{ t.history_title }}</span>
+  </div>
   <a href="/enter/{{ meter }}" class="btn btn-primary">{{ t.action_add_reading }}</a>
 </div>
 
 {% if stats %}
 <div class="summary">
   {% if meta.meter_type.value == "counter" %}
-    <div class="summary-card"><div class="s-label">{{ t.stats_last_30d }}</div>   <div class="s-val">{{ (stats.last_30d or 0) | round(1) }} {{ meta.unit }}</div></div>
-    <div class="summary-card"><div class="s-label">{{ t.stats_last_365d }}</div>  <div class="s-val">{{ (stats.last_365d or 0) | round(1) }} {{ meta.unit }}</div></div>
-    <div class="summary-card"><div class="s-label">{{ t.stats_avg_month }}</div>  <div class="s-val">{{ (stats.avg_per_month or 0) | round(1) }} {{ meta.unit }}</div></div>
-    <div class="summary-card"><div class="s-label">{{ t.stats_avg_year }}</div>   <div class="s-val">{{ (stats.avg_per_year or 0) | round(0) | int }} {{ meta.unit }}</div></div>
+    <div class="summary-card"><div class="s-label">{{ t.stats_last_30d }}</div>  <div class="s-val">{{ (stats.last_30d or 0) | round(1) }} {{ meta.unit }}</div></div>
+    <div class="summary-card"><div class="s-label">{{ t.stats_last_365d }}</div> <div class="s-val">{{ (stats.last_365d or 0) | round(1) }} {{ meta.unit }}</div></div>
+    <div class="summary-card"><div class="s-label">{{ t.stats_avg_month }}</div> <div class="s-val">{{ (stats.avg_per_month or 0) | round(1) }} {{ meta.unit }}</div></div>
+    <div class="summary-card"><div class="s-label">{{ t.stats_avg_year }}</div>  <div class="s-val">{{ (stats.avg_per_year or 0) | round(0) | int }} {{ meta.unit }}</div></div>
   {% elif meta.meter_type.value == "storage" %}
     <div class="summary-card"><div class="s-label">{{ t.stats_current_level }}</div>      <div class="s-val" style="color:#3b82f6">{{ (stats.current_level or 0) | round(0) | int }} {{ meta.unit }}</div></div>
     <div class="summary-card"><div class="s-label">{{ t.stats_total_refilled }}</div>     <div class="s-val" style="color:#22c55e">{{ (stats.total_refilled or 0) | round(0) | int }} {{ meta.unit }}</div></div>
     <div class="summary-card"><div class="s-label">{{ t.stats_total_consumed }}</div>     <div class="s-val" style="color:#ef4444">{{ (stats.total_consumed or 0) | round(0) | int }} {{ meta.unit }}</div></div>
     <div class="summary-card"><div class="s-label">{{ t.stats_avg_consumed_month }}</div> <div class="s-val">{{ (stats.avg_consumed_per_month or 0) | round(0) | int }} {{ meta.unit }}</div></div>
   {% else %}
-    <div class="summary-card"><div class="s-label">{{ t.stats_last }}</div>  <div class="s-val">{{ (stats.last or 0) | round(2) }} {{ meta.unit }}</div></div>
-    <div class="summary-card"><div class="s-label">{{ t.stats_min }}</div>   <div class="s-val">{{ (stats.min or 0)  | round(2) }} {{ meta.unit }}</div></div>
-    <div class="summary-card"><div class="s-label">{{ t.stats_max }}</div>   <div class="s-val">{{ (stats.max or 0)  | round(2) }} {{ meta.unit }}</div></div>
-    <div class="summary-card"><div class="s-label">{{ t.stats_mean }}</div>  <div class="s-val">{{ (stats.mean or 0) | round(2) }} {{ meta.unit }}</div></div>
+    <div class="summary-card"><div class="s-label">{{ t.stats_last }}</div> <div class="s-val">{{ (stats.last or 0) | round(2) }} {{ meta.unit }}</div></div>
+    <div class="summary-card"><div class="s-label">{{ t.stats_min }}</div>  <div class="s-val">{{ (stats.min or 0)  | round(2) }} {{ meta.unit }}</div></div>
+    <div class="summary-card"><div class="s-label">{{ t.stats_max }}</div>  <div class="s-val">{{ (stats.max or 0)  | round(2) }} {{ meta.unit }}</div></div>
+    <div class="summary-card"><div class="s-label">{{ t.stats_mean }}</div> <div class="s-val">{{ (stats.mean or 0) | round(2) }} {{ meta.unit }}</div></div>
   {% endif %}
 </div>
 {% endif %}

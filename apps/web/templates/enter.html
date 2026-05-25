@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}{{ t.app_name }} – {{ meta.label }}{% endblock %}
+{% block title %}{{ t.app_name }} – {{ t["meter_" ~ meter ~ "_label"] }}{% endblock %}
 
 {% block head %}
 <style>
@@ -34,15 +34,19 @@
 {% endblock %}
 
 {% block content %}
+{% set meter_label = t["meter_" ~ meter ~ "_label"] %}
+{% set meter_hint  = t["meter_" ~ meter ~ "_hint"] %}
+{% set meter_ph    = t["meter_" ~ meter ~ "_placeholder"] %}
+
 <a href="/" class="back">{{ t.back }}</a>
 
 <div class="form-card">
   <div class="form-header">
     <span class="icon">{{ meta.icon }}</span>
-    <h2>{{ meta.label }} – {{ t.enter_title }}</h2>
+    <h2>{{ meter_label }} – {{ t.enter_title }}</h2>
   </div>
   <span class="type-badge type-{{ meta.meter_type.value }}">
-    {{ t["type_" ~ meta.meter_type.value] }}
+    {{ type_icons[meta.meter_type] }} {{ t["meter_type_" ~ meta.meter_type.value] }}
   </span>
 
   {% if last_reading %}
@@ -55,11 +59,11 @@
 
   <form method="POST">
     <div class="field">
-      {% set ph = t.enter_last_prefix ~ (last_reading.value | round(3) | string) if last_reading else meta.placeholder %}
+      {% set ph = t.enter_last_prefix ~ (last_reading.value | round(3) | string) if last_reading else meter_ph %}
       {% if meta.meter_type.value == "counter" %}
         <label>{{ t.enter_label_counter }} ({{ meta.unit }})</label>
         <input type="number" name="value" step="any" placeholder="{{ ph }}" required autofocus>
-        <p class="hint">{{ t.enter_hint_counter }}</p>
+        <p class="hint">{{ meter_hint }}</p>
       {% elif meta.meter_type.value == "storage" %}
         <label>{{ t.enter_label_storage }} ({{ meta.unit }})</label>
         <input type="number" name="value" step="any" placeholder="{{ ph }}" required autofocus>
@@ -70,7 +74,7 @@
       {% else %}
         <label>{{ t.enter_label_sensor }} ({{ meta.unit }})</label>
         <input type="number" name="value" step="any" placeholder="{{ ph }}" required autofocus>
-        <p class="hint">{{ meta.hint }}</p>
+        <p class="hint">{{ meter_hint }}</p>
       {% endif %}
     </div>
 

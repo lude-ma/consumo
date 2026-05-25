@@ -5,7 +5,7 @@ import requests as http
 from pathlib import Path
 from flask import Flask, render_template, request, redirect, url_for, flash, make_response
 
-from consumo_common.models import METERS, METER_TYPE_LABELS
+from consumo_common.models import METERS, METER_TYPE_ICONS
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -87,7 +87,7 @@ def api(method: str, path: str, **kwargs):
 def index():
     t = get_t()
     return render_template("index.html", meters=METERS,
-                           type_labels=METER_TYPE_LABELS, t=t,
+                           type_icons=METER_TYPE_ICONS, t=t,
                            supported_langs=SUPPORTED, current_lang=_detect_lang())
 
 
@@ -107,7 +107,7 @@ def enter(meter: str):
         if rows:
             last_reading = rows[0]
     except Exception:
-        pass  # non-critical — form still works without it
+        pass
 
     if request.method == "POST":
         try:
@@ -123,7 +123,7 @@ def enter(meter: str):
                 payload["timestamp"] = date_str + ":00Z"
 
             api("POST", f"/api/v1/meters/{meter}/readings", json=payload)
-            flash(t["flash_saved"].format(label=meta.label, value=value, unit=meta.unit), "success")
+            flash(t["flash_saved"].format(label=t[f"meter_{meter}_label"], value=value, unit=meta.unit), "success")
             return redirect(url_for("history", meter=meter))
 
         except ValueError:
@@ -137,7 +137,7 @@ def enter(meter: str):
 
     return render_template("enter.html", meter=meter, meta=meta,
                            last_reading=last_reading,
-                           type_labels=METER_TYPE_LABELS, t=t,
+                           type_icons=METER_TYPE_ICONS, t=t,
                            supported_langs=SUPPORTED, current_lang=_detect_lang())
 
 
@@ -165,7 +165,7 @@ def history(meter: str):
 
     return render_template("history.html", meter=meter, meta=meta,
                            rows=rows, stats=stats,
-                           type_labels=METER_TYPE_LABELS, t=t,
+                           type_icons=METER_TYPE_ICONS, t=t,
                            supported_langs=SUPPORTED, current_lang=_detect_lang())
 
 

@@ -1,29 +1,20 @@
 {
   "lang": "de",
   "lang_label": "Deutsch",
-
   "app_name": "Consumo",
   "app_tagline": "Zähler, Lager und Sensoren tracken",
   "nav_overview": "Übersicht",
   "nav_grafana": "Grafana →",
-
   "page_overview_title": "Verbrauchstracker",
   "page_overview_subtitle": "Zählerstände, Lagerbestände und Messwerte erfassen",
-
   "section_counter": "Zählerstände",
   "section_storage": "Lagerbestände",
   "section_sensor": "Messwerte",
-
-  "type_counter": "Zählerstand",
-  "type_storage": "Lagerbestand",
-  "type_sensor": "Messwert",
-
   "action_enter": "+ Wert eingeben",
   "action_history": "Verlauf",
   "action_save": "Speichern",
   "action_view_history": "Verlauf ansehen",
   "action_add_reading": "+ Wert eingeben",
-
   "enter_title": "Wert eingeben",
   "enter_label_counter": "Zählerstand",
   "enter_label_storage": "Aktueller Füllstand",
@@ -39,13 +30,11 @@
   "enter_placeholder_note_default": "z.B. nach Urlaub",
   "enter_last_value": "Letzter Wert",
   "enter_last_prefix": "Letzter: ",
-
   "history_title": "Verlauf",
   "history_col_date": "Datum",
   "history_col_value": "Wert",
   "history_col_note": "Notiz",
   "history_empty": "Noch keine Einträge vorhanden.",
-
   "stats_last_30d": "Letzte 30 Tage",
   "stats_last_365d": "Letzte 365 Tage",
   "stats_avg_month": "Ø pro Monat",
@@ -58,14 +47,12 @@
   "stats_min": "Min",
   "stats_max": "Max",
   "stats_mean": "Durchschnitt",
-
   "back": "← Übersicht",
   "flash_unknown_meter": "Unbekannter Zähler.",
   "flash_saved": "✓ {label} gespeichert: {value} {unit}",
   "flash_invalid_value": "Ungültiger Wert — bitte eine Zahl eingeben.",
   "flash_api_error": "API-Fehler: {message}",
   "flash_load_error": "Fehler beim Laden der Daten.",
-
   "grafana_dashboard_title": "Verbrauchsübersicht",
   "grafana_section_electricity": "⚡ Strom",
   "grafana_section_water": "💧 Wasser",
@@ -84,5 +71,17 @@
   "grafana_avg_consumed_month": "Ø Verbrauch / Monat",
   "grafana_level_history": "Füllstandsverlauf",
   "grafana_refills_consumption": "Befüllungen & Verbrauch je Monat",
-  "grafana_yearly_overlaid": "Jahresverbrauch überlagert"
+  "grafana_yearly_overlaid": "Jahresverbrauch überlagert",
+  "meter_strom_label": "Strom",
+  "meter_strom_hint": "Aktueller Zählerstand (steigt monoton)",
+  "meter_strom_placeholder": "z.B. 12345.6",
+  "meter_wasser_label": "Wasser",
+  "meter_wasser_hint": "Aktueller Zählerstand (steigt monoton)",
+  "meter_wasser_placeholder": "z.B. 987.3",
+  "meter_pellets_label": "Pellets",
+  "meter_pellets_hint": "Aktueller Füllstand im Tank",
+  "meter_pellets_placeholder": "z.B. 2500",
+  "meter_type_counter": "Zählerstand",
+  "meter_type_storage": "Lagerbestand",
+  "meter_type_sensor": "Messwert"
 }

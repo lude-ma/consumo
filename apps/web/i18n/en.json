@@ -1,29 +1,20 @@
 {
   "lang": "en",
   "lang_label": "English",
-
   "app_name": "Consumo",
   "app_tagline": "Track meters, storage and sensors",
   "nav_overview": "Overview",
   "nav_grafana": "Grafana →",
-
   "page_overview_title": "Consumption Tracker",
   "page_overview_subtitle": "Meter readings, storage levels and sensor values",
-
   "section_counter": "Meter Readings",
   "section_storage": "Storage Levels",
   "section_sensor": "Sensor Values",
-
-  "type_counter": "Meter",
-  "type_storage": "Storage",
-  "type_sensor": "Sensor",
-
   "action_enter": "+ Add reading",
   "action_history": "History",
   "action_save": "Save",
   "action_view_history": "View history",
   "action_add_reading": "+ Add reading",
-
   "enter_title": "Add reading",
   "enter_label_counter": "Meter reading",
   "enter_label_storage": "Current level",
@@ -39,13 +30,11 @@
   "enter_placeholder_note_default": "e.g. after vacation",
   "enter_last_value": "Last value",
   "enter_last_prefix": "Last: ",
-
   "history_title": "History",
   "history_col_date": "Date",
   "history_col_value": "Value",
   "history_col_note": "Note",
   "history_empty": "No entries yet.",
-
   "stats_last_30d": "Last 30 days",
   "stats_last_365d": "Last 365 days",
   "stats_avg_month": "Ø per month",
@@ -58,14 +47,12 @@
   "stats_min": "Min",
   "stats_max": "Max",
   "stats_mean": "Average",
-
   "back": "← Back",
   "flash_unknown_meter": "Unknown meter.",
   "flash_saved": "✓ {label} saved: {value} {unit}",
   "flash_invalid_value": "Invalid value — please enter a number.",
   "flash_api_error": "API error: {message}",
   "flash_load_error": "Error loading data.",
-
   "grafana_dashboard_title": "Consumption Overview",
   "grafana_section_electricity": "⚡ Electricity",
   "grafana_section_water": "💧 Water",
@@ -84,5 +71,17 @@
   "grafana_avg_consumed_month": "Ø consumed / month",
   "grafana_level_history": "Fill level history",
   "grafana_refills_consumption": "Refills & consumption per month",
-  "grafana_yearly_overlaid": "Yearly consumption (overlaid)"
+  "grafana_yearly_overlaid": "Yearly consumption (overlaid)",
+  "meter_strom_label": "Electricity",
+  "meter_strom_hint": "Current meter reading (monotonically increasing)",
+  "meter_strom_placeholder": "e.g. 12345.6",
+  "meter_wasser_label": "Water",
+  "meter_wasser_hint": "Current meter reading (monotonically increasing)",
+  "meter_wasser_placeholder": "e.g. 987.3",
+  "meter_pellets_label": "Pellets",
+  "meter_pellets_hint": "Current fill level in tank",
+  "meter_pellets_placeholder": "e.g. 2500",
+  "meter_type_counter": "Meter reading",
+  "meter_type_storage": "Storage level",
+  "meter_type_sensor": "Sensor value"
 }

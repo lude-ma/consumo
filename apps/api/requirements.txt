@@ -1,4 +1,4 @@
-flask==3.0.3
+fastapi==0.111.0
+uvicorn[standard]==0.29.0
 influxdb-client==1.44.0
 python-dotenv==1.0.1
-waitress==3.0.0

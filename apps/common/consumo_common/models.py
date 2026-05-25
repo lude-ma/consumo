@@ -22,52 +22,42 @@ class MeterType(str, Enum):
 
 @dataclass(frozen=True)
 class MeterMeta:
-    label:       str
     unit:        str
     icon:        str
     color:       str
     meter_type:  MeterType
-    placeholder: str
-    hint:        str
 
 
 # ---------------------------------------------------------------------------
 # Central meter registry — the single source of truth for the whole project.
+# Labels, hints and placeholders live in apps/web/i18n/{lang}.json under the
+# keys  meter_{id}_label | meter_{id}_hint | meter_{id}_placeholder
 # Add new meters here; API and Web UI pick them up automatically.
 # ---------------------------------------------------------------------------
 METERS: dict[str, MeterMeta] = {
     "strom": MeterMeta(
-        label="Strom",
         unit="kWh",
         icon="⚡",
         color="#f59e0b",
         meter_type=MeterType.COUNTER,
-        placeholder="z.B. 12345.6",
-        hint="Aktueller Zählerstand (steigt monoton)",
     ),
     "wasser": MeterMeta(
-        label="Wasser",
         unit="m³",
         icon="💧",
         color="#3b82f6",
         meter_type=MeterType.COUNTER,
-        placeholder="z.B. 987.3",
-        hint="Aktueller Zählerstand (steigt monoton)",
     ),
     "pellets": MeterMeta(
-        label="Pellets",
         unit="kg",
         icon="🪵",
         color="#a16207",
         meter_type=MeterType.STORAGE,
-        placeholder="z.B. 2500",
-        hint="Aktueller Füllstand im Tank",
     ),
 }
 
-# Human-readable labels for meter types
-METER_TYPE_LABELS: dict[MeterType, tuple[str, str]] = {
-    MeterType.COUNTER: ("Zählerstand", "📟"),
-    MeterType.STORAGE: ("Lagerbestand", "🗄️"),
-    MeterType.SENSOR:  ("Messwert",     "🌡️"),
+# Icons for meter types — language-neutral, used by templates
+METER_TYPE_ICONS: dict[MeterType, str] = {
+    MeterType.COUNTER: "📟",
+    MeterType.STORAGE: "🗄️",
+    MeterType.SENSOR:  "🌡️",
 }

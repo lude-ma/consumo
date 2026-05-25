@@ -24,8 +24,8 @@ services:
     volumes:
       - ../apps/api:/app/api
       - ../apps/common:/app/common
-    environment:
-      - FLASK_DEBUG=1
+    command: ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8200", "--reload"]
+    environment: []
 
   web:
     container_name: consumo-dev-web

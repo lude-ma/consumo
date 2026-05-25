@@ -34,15 +34,15 @@
   {% set ns = namespace(found=false) %}
   {% for key, meta in meters.items() %}{% if meta.meter_type.value == type_key %}{% set ns.found = true %}{% endif %}{% endfor %}
   {% if ns.found %}
-  <div class="section-title">{{ type_title }}</div>
+  <div class="section-title">{{ type_icons[meta.meter_type] }} {{ type_title }}</div>
   <div class="cards">
     {% for key, meta in meters.items() %}{% if meta.meter_type.value == type_key %}
     <div class="card card-{{ key }}">
       <div class="icon">{{ meta.icon }}</div>
-      <div class="label">{{ meta.label }}</div>
+      <div class="label">{{ t["meter_" ~ key ~ "_label"] }}</div>
       <div class="unit">{{ meta.unit }}</div>
       <span class="type-badge type-{{ meta.meter_type.value }}">
-        {{ t["type_" ~ meta.meter_type.value] }}
+        {{ t["meter_type_" ~ meta.meter_type.value] }}
       </span>
       <div class="actions">
         <a href="/enter/{{ key }}" class="tag tag-enter">{{ t.action_enter }}</a>
