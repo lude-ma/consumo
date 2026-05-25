@@ -44,8 +44,13 @@ dev-restart:
 	docker compose -p $(DEV_PROJECT) $(DEV_FILES) restart
 
 # ── Dashboards ──────────────────────────────────────────────────────────────
-build-dashboards:
-	python3 ../infrastructure/grafana/dashboard_template/build_dashboards.py
+build-dashboards-prod:
+	python3 ../infrastructure/grafana/dashboard_template/build_dashboards.py --env .env.prod
+
+build-dashboards-dev:
+	python3 ../infrastructure/grafana/dashboard_template/build_dashboards.py --env .env.dev
+
+build-dashboards: build-dashboards-prod
 
 # ── Help ────────────────────────────────────────────────────────────────────
 help:

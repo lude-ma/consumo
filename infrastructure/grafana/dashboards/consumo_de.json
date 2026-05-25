@@ -1,6 +1,6 @@
 {
   "title": "Verbrauchsübersicht",
-  "uid": "energy-de",
+  "uid": "consumo-de",
   "schemaVersion": 38,
   "version": 3,
   "refresh": "1h",
@@ -58,7 +58,7 @@
             "type": "influxdb"
           },
           "refId": "A",
-          "query": "from(bucket: \"energy\")\n  |> range(start: -10y)\n  |> filter(fn: (r) => r._measurement == \"strom\" and r._field == \"value\")\n  |> sort(columns: [\"_time\"])\n  |> difference(nonNegative: true)\n  |> aggregateWindow(every: 1mo, fn: sum, createEmpty: false)"
+          "query": "from(bucket: \"consumo\")\n  |> range(start: -10y)\n  |> filter(fn: (r) => r._measurement == \"strom\" and r._field == \"value\")\n  |> sort(columns: [\"_time\"])\n  |> difference(nonNegative: true)\n  |> aggregateWindow(every: 1mo, fn: sum, createEmpty: false)"
         }
       ]
     },
@@ -96,7 +96,7 @@
             "type": "influxdb"
           },
           "refId": "A",
-          "query": "from(bucket: \"energy\")\n  |> range(start: -31d)\n  |> filter(fn: (r) => r._measurement == \"strom\" and r._field == \"value\")\n  |> sort(columns: [\"_time\"])\n  |> difference(nonNegative: true)"
+          "query": "from(bucket: \"consumo\")\n  |> range(start: -31d)\n  |> filter(fn: (r) => r._measurement == \"strom\" and r._field == \"value\")\n  |> sort(columns: [\"_time\"])\n  |> difference(nonNegative: true)"
         }
       ]
     },
@@ -134,7 +134,7 @@
             "type": "influxdb"
           },
           "refId": "A",
-          "query": "from(bucket: \"energy\")\n  |> range(start: -366d)\n  |> filter(fn: (r) => r._measurement == \"strom\" and r._field == \"value\")\n  |> sort(columns: [\"_time\"])\n  |> difference(nonNegative: true)"
+          "query": "from(bucket: \"consumo\")\n  |> range(start: -366d)\n  |> filter(fn: (r) => r._measurement == \"strom\" and r._field == \"value\")\n  |> sort(columns: [\"_time\"])\n  |> difference(nonNegative: true)"
         }
       ]
     },
@@ -172,7 +172,7 @@
             "type": "influxdb"
           },
           "refId": "A",
-          "query": "from(bucket: \"energy\")\n  |> range(start: -10y)\n  |> filter(fn: (r) => r._measurement == \"strom\" and r._field == \"value\")\n  |> sort(columns: [\"_time\"])\n  |> difference(nonNegative: true)\n  |> aggregateWindow(every: 1y, fn: sum, createEmpty: false)"
+          "query": "from(bucket: \"consumo\")\n  |> range(start: -10y)\n  |> filter(fn: (r) => r._measurement == \"strom\" and r._field == \"value\")\n  |> sort(columns: [\"_time\"])\n  |> difference(nonNegative: true)\n  |> aggregateWindow(every: 1y, fn: sum, createEmpty: false)"
         }
       ]
     },
@@ -210,7 +210,7 @@
             "type": "influxdb"
           },
           "refId": "A",
-          "query": "from(bucket: \"energy\")\n  |> range(start: -10y)\n  |> filter(fn: (r) => r._measurement == \"strom\" and r._field == \"value\")\n  |> sort(columns: [\"_time\"])\n  |> difference(nonNegative: true)\n  |> aggregateWindow(every: 1mo, fn: sum, createEmpty: false)\n  |> map(fn: (r) => ({ r with year: string(v: date.year(t: r._time)), month: date.month(t: r._time) }))\n  |> group(columns: [\"year\"])"
+          "query": "from(bucket: \"consumo\")\n  |> range(start: -10y)\n  |> filter(fn: (r) => r._measurement == \"strom\" and r._field == \"value\")\n  |> sort(columns: [\"_time\"])\n  |> difference(nonNegative: true)\n  |> aggregateWindow(every: 1mo, fn: sum, createEmpty: false)\n  |> map(fn: (r) => ({ r with year: string(v: date.year(t: r._time)), month: date.month(t: r._time) }))\n  |> group(columns: [\"year\"])"
         }
       ]
     },
@@ -248,28 +248,28 @@
             "type": "influxdb"
           },
           "refId": "Y1",
-          "query": "from(bucket: \"energy\")\n  |> range(start: 2022-01-01T00:00:00Z, stop: 2023-01-01T00:00:00Z)\n  |> filter(fn: (r) => r._measurement == \"strom\" and r._field == \"value\")\n  |> sort(columns: [\"_time\"])\n  |> difference(nonNegative: true)\n  |> cumulativeSum()\n  |> set(key: \"_field\", value: \"2022\")"
+          "query": "from(bucket: \"consumo\")\n  |> range(start: 2022-01-01T00:00:00Z, stop: 2023-01-01T00:00:00Z)\n  |> filter(fn: (r) => r._measurement == \"strom\" and r._field == \"value\")\n  |> sort(columns: [\"_time\"])\n  |> difference(nonNegative: true)\n  |> cumulativeSum()\n  |> set(key: \"_field\", value: \"2022\")"
         },
         {
           "datasource": {
             "type": "influxdb"
           },
           "refId": "Y2",
-          "query": "from(bucket: \"energy\")\n  |> range(start: 2023-01-01T00:00:00Z, stop: 2024-01-01T00:00:00Z)\n  |> filter(fn: (r) => r._measurement == \"strom\" and r._field == \"value\")\n  |> sort(columns: [\"_time\"])\n  |> difference(nonNegative: true)\n  |> cumulativeSum()\n  |> timeShift(duration: -1y)\n  |> set(key: \"_field\", value: \"2023\")"
+          "query": "from(bucket: \"consumo\")\n  |> range(start: 2023-01-01T00:00:00Z, stop: 2024-01-01T00:00:00Z)\n  |> filter(fn: (r) => r._measurement == \"strom\" and r._field == \"value\")\n  |> sort(columns: [\"_time\"])\n  |> difference(nonNegative: true)\n  |> cumulativeSum()\n  |> timeShift(duration: -1y)\n  |> set(key: \"_field\", value: \"2023\")"
         },
         {
           "datasource": {
             "type": "influxdb"
           },
           "refId": "Y3",
-          "query": "from(bucket: \"energy\")\n  |> range(start: 2024-01-01T00:00:00Z, stop: 2025-01-01T00:00:00Z)\n  |> filter(fn: (r) => r._measurement == \"strom\" and r._field == \"value\")\n  |> sort(columns: [\"_time\"])\n  |> difference(nonNegative: true)\n  |> cumulativeSum()\n  |> timeShift(duration: -2y)\n  |> set(key: \"_field\", value: \"2024\")"
+          "query": "from(bucket: \"consumo\")\n  |> range(start: 2024-01-01T00:00:00Z, stop: 2025-01-01T00:00:00Z)\n  |> filter(fn: (r) => r._measurement == \"strom\" and r._field == \"value\")\n  |> sort(columns: [\"_time\"])\n  |> difference(nonNegative: true)\n  |> cumulativeSum()\n  |> timeShift(duration: -2y)\n  |> set(key: \"_field\", value: \"2024\")"
         },
         {
           "datasource": {
             "type": "influxdb"
           },
           "refId": "Y4",
-          "query": "from(bucket: \"energy\")\n  |> range(start: 2025-01-01T00:00:00Z, stop: 2026-01-01T00:00:00Z)\n  |> filter(fn: (r) => r._measurement == \"strom\" and r._field == \"value\")\n  |> sort(columns: [\"_time\"])\n  |> difference(nonNegative: true)\n  |> cumulativeSum()\n  |> timeShift(duration: -3y)\n  |> set(key: \"_field\", value: \"2025\")"
+          "query": "from(bucket: \"consumo\")\n  |> range(start: 2025-01-01T00:00:00Z, stop: 2026-01-01T00:00:00Z)\n  |> filter(fn: (r) => r._measurement == \"strom\" and r._field == \"value\")\n  |> sort(columns: [\"_time\"])\n  |> difference(nonNegative: true)\n  |> cumulativeSum()\n  |> timeShift(duration: -3y)\n  |> set(key: \"_field\", value: \"2025\")"
         }
       ]
     },
@@ -322,7 +322,7 @@
             "type": "influxdb"
           },
           "refId": "A",
-          "query": "from(bucket: \"energy\")\n  |> range(start: -10y)\n  |> filter(fn: (r) => r._measurement == \"wasser\" and r._field == \"value\")\n  |> sort(columns: [\"_time\"])\n  |> difference(nonNegative: true)\n  |> aggregateWindow(every: 1mo, fn: sum, createEmpty: false)"
+          "query": "from(bucket: \"consumo\")\n  |> range(start: -10y)\n  |> filter(fn: (r) => r._measurement == \"wasser\" and r._field == \"value\")\n  |> sort(columns: [\"_time\"])\n  |> difference(nonNegative: true)\n  |> aggregateWindow(every: 1mo, fn: sum, createEmpty: false)"
         }
       ]
     },
@@ -360,7 +360,7 @@
             "type": "influxdb"
           },
           "refId": "A",
-          "query": "from(bucket: \"energy\")\n  |> range(start: -31d)\n  |> filter(fn: (r) => r._measurement == \"wasser\" and r._field == \"value\")\n  |> sort(columns: [\"_time\"])\n  |> difference(nonNegative: true)"
+          "query": "from(bucket: \"consumo\")\n  |> range(start: -31d)\n  |> filter(fn: (r) => r._measurement == \"wasser\" and r._field == \"value\")\n  |> sort(columns: [\"_time\"])\n  |> difference(nonNegative: true)"
         }
       ]
     },
@@ -398,7 +398,7 @@
             "type": "influxdb"
           },
           "refId": "A",
-          "query": "from(bucket: \"energy\")\n  |> range(start: -366d)\n  |> filter(fn: (r) => r._measurement == \"wasser\" and r._field == \"value\")\n  |> sort(columns: [\"_time\"])\n  |> difference(nonNegative: true)"
+          "query": "from(bucket: \"consumo\")\n  |> range(start: -366d)\n  |> filter(fn: (r) => r._measurement == \"wasser\" and r._field == \"value\")\n  |> sort(columns: [\"_time\"])\n  |> difference(nonNegative: true)"
         }
       ]
     },
@@ -436,7 +436,7 @@
             "type": "influxdb"
           },
           "refId": "A",
-          "query": "from(bucket: \"energy\")\n  |> range(start: -10y)\n  |> filter(fn: (r) => r._measurement == \"wasser\" and r._field == \"value\")\n  |> sort(columns: [\"_time\"])\n  |> difference(nonNegative: true)\n  |> aggregateWindow(every: 1y, fn: sum, createEmpty: false)"
+          "query": "from(bucket: \"consumo\")\n  |> range(start: -10y)\n  |> filter(fn: (r) => r._measurement == \"wasser\" and r._field == \"value\")\n  |> sort(columns: [\"_time\"])\n  |> difference(nonNegative: true)\n  |> aggregateWindow(every: 1y, fn: sum, createEmpty: false)"
         }
       ]
     },
@@ -474,7 +474,7 @@
             "type": "influxdb"
           },
           "refId": "A",
-          "query": "from(bucket: \"energy\")\n  |> range(start: -10y)\n  |> filter(fn: (r) => r._measurement == \"wasser\" and r._field == \"value\")\n  |> sort(columns: [\"_time\"])\n  |> difference(nonNegative: true)\n  |> aggregateWindow(every: 1mo, fn: sum, createEmpty: false)\n  |> map(fn: (r) => ({ r with year: string(v: date.year(t: r._time)), month: date.month(t: r._time) }))\n  |> group(columns: [\"year\"])"
+          "query": "from(bucket: \"consumo\")\n  |> range(start: -10y)\n  |> filter(fn: (r) => r._measurement == \"wasser\" and r._field == \"value\")\n  |> sort(columns: [\"_time\"])\n  |> difference(nonNegative: true)\n  |> aggregateWindow(every: 1mo, fn: sum, createEmpty: false)\n  |> map(fn: (r) => ({ r with year: string(v: date.year(t: r._time)), month: date.month(t: r._time) }))\n  |> group(columns: [\"year\"])"
         }
       ]
     },
@@ -512,28 +512,28 @@
             "type": "influxdb"
           },
           "refId": "Y1",
-          "query": "from(bucket: \"energy\")\n  |> range(start: 2022-01-01T00:00:00Z, stop: 2023-01-01T00:00:00Z)\n  |> filter(fn: (r) => r._measurement == \"wasser\" and r._field == \"value\")\n  |> sort(columns: [\"_time\"])\n  |> difference(nonNegative: true)\n  |> cumulativeSum()\n  |> set(key: \"_field\", value: \"2022\")"
+          "query": "from(bucket: \"consumo\")\n  |> range(start: 2022-01-01T00:00:00Z, stop: 2023-01-01T00:00:00Z)\n  |> filter(fn: (r) => r._measurement == \"wasser\" and r._field == \"value\")\n  |> sort(columns: [\"_time\"])\n  |> difference(nonNegative: true)\n  |> cumulativeSum()\n  |> set(key: \"_field\", value: \"2022\")"
         },
         {
           "datasource": {
             "type": "influxdb"
           },
           "refId": "Y2",
-          "query": "from(bucket: \"energy\")\n  |> range(start: 2023-01-01T00:00:00Z, stop: 2024-01-01T00:00:00Z)\n  |> filter(fn: (r) => r._measurement == \"wasser\" and r._field == \"value\")\n  |> sort(columns: [\"_time\"])\n  |> difference(nonNegative: true)\n  |> cumulativeSum()\n  |> timeShift(duration: -1y)\n  |> set(key: \"_field\", value: \"2023\")"
+          "query": "from(bucket: \"consumo\")\n  |> range(start: 2023-01-01T00:00:00Z, stop: 2024-01-01T00:00:00Z)\n  |> filter(fn: (r) => r._measurement == \"wasser\" and r._field == \"value\")\n  |> sort(columns: [\"_time\"])\n  |> difference(nonNegative: true)\n  |> cumulativeSum()\n  |> timeShift(duration: -1y)\n  |> set(key: \"_field\", value: \"2023\")"
         },
         {
           "datasource": {
             "type": "influxdb"
           },
           "refId": "Y3",
-          "query": "from(bucket: \"energy\")\n  |> range(start: 2024-01-01T00:00:00Z, stop: 2025-01-01T00:00:00Z)\n  |> filter(fn: (r) => r._measurement == \"wasser\" and r._field == \"value\")\n  |> sort(columns: [\"_time\"])\n  |> difference(nonNegative: true)\n  |> cumulativeSum()\n  |> timeShift(duration: -2y)\n  |> set(key: \"_field\", value: \"2024\")"
+          "query": "from(bucket: \"consumo\")\n  |> range(start: 2024-01-01T00:00:00Z, stop: 2025-01-01T00:00:00Z)\n  |> filter(fn: (r) => r._measurement == \"wasser\" and r._field == \"value\")\n  |> sort(columns: [\"_time\"])\n  |> difference(nonNegative: true)\n  |> cumulativeSum()\n  |> timeShift(duration: -2y)\n  |> set(key: \"_field\", value: \"2024\")"
         },
         {
           "datasource": {
             "type": "influxdb"
           },
           "refId": "Y4",
-          "query": "from(bucket: \"energy\")\n  |> range(start: 2025-01-01T00:00:00Z, stop: 2026-01-01T00:00:00Z)\n  |> filter(fn: (r) => r._measurement == \"wasser\" and r._field == \"value\")\n  |> sort(columns: [\"_time\"])\n  |> difference(nonNegative: true)\n  |> cumulativeSum()\n  |> timeShift(duration: -3y)\n  |> set(key: \"_field\", value: \"2025\")"
+          "query": "from(bucket: \"consumo\")\n  |> range(start: 2025-01-01T00:00:00Z, stop: 2026-01-01T00:00:00Z)\n  |> filter(fn: (r) => r._measurement == \"wasser\" and r._field == \"value\")\n  |> sort(columns: [\"_time\"])\n  |> difference(nonNegative: true)\n  |> cumulativeSum()\n  |> timeShift(duration: -3y)\n  |> set(key: \"_field\", value: \"2025\")"
         }
       ]
     },
@@ -586,7 +586,7 @@
             "type": "influxdb"
           },
           "refId": "A",
-          "query": "from(bucket: \"energy\")\n  |> range(start: -10y)\n  |> filter(fn: (r) => r._measurement == \"pellets\" and r._field == \"value\")\n  |> last()"
+          "query": "from(bucket: \"consumo\")\n  |> range(start: -10y)\n  |> filter(fn: (r) => r._measurement == \"pellets\" and r._field == \"value\")\n  |> last()"
         }
       ]
     },
@@ -624,7 +624,7 @@
             "type": "influxdb"
           },
           "refId": "A",
-          "query": "from(bucket: \"energy\")\n  |> range(start: -10y)\n  |> filter(fn: (r) => r._measurement == \"pellets\" and r._field == \"value\")\n  |> sort(columns: [\"_time\"])\n  |> difference(nonNegative: false)\n  |> filter(fn: (r) => r._value > 0)"
+          "query": "from(bucket: \"consumo\")\n  |> range(start: -10y)\n  |> filter(fn: (r) => r._measurement == \"pellets\" and r._field == \"value\")\n  |> sort(columns: [\"_time\"])\n  |> difference(nonNegative: false)\n  |> filter(fn: (r) => r._value > 0)"
         }
       ]
     },
@@ -662,7 +662,7 @@
             "type": "influxdb"
           },
           "refId": "A",
-          "query": "from(bucket: \"energy\")\n  |> range(start: -10y)\n  |> filter(fn: (r) => r._measurement == \"pellets\" and r._field == \"value\")\n  |> sort(columns: [\"_time\"])\n  |> difference(nonNegative: false)\n  |> filter(fn: (r) => r._value < 0)\n  |> map(fn: (r) => ({ r with _value: r._value * -1.0 }))"
+          "query": "from(bucket: \"consumo\")\n  |> range(start: -10y)\n  |> filter(fn: (r) => r._measurement == \"pellets\" and r._field == \"value\")\n  |> sort(columns: [\"_time\"])\n  |> difference(nonNegative: false)\n  |> filter(fn: (r) => r._value < 0)\n  |> map(fn: (r) => ({ r with _value: r._value * -1.0 }))"
         }
       ]
     },
@@ -700,7 +700,7 @@
             "type": "influxdb"
           },
           "refId": "A",
-          "query": "from(bucket: \"energy\")\n  |> range(start: -10y)\n  |> filter(fn: (r) => r._measurement == \"pellets\" and r._field == \"value\")\n  |> sort(columns: [\"_time\"])\n  |> difference(nonNegative: false)\n  |> filter(fn: (r) => r._value < 0)\n  |> map(fn: (r) => ({ r with _value: r._value * -1.0 }))\n  |> aggregateWindow(every: 1mo, fn: sum, createEmpty: false)"
+          "query": "from(bucket: \"consumo\")\n  |> range(start: -10y)\n  |> filter(fn: (r) => r._measurement == \"pellets\" and r._field == \"value\")\n  |> sort(columns: [\"_time\"])\n  |> difference(nonNegative: false)\n  |> filter(fn: (r) => r._value < 0)\n  |> map(fn: (r) => ({ r with _value: r._value * -1.0 }))\n  |> aggregateWindow(every: 1mo, fn: sum, createEmpty: false)"
         }
       ]
     },
@@ -743,7 +743,7 @@
             "type": "influxdb"
           },
           "refId": "A",
-          "query": "from(bucket: \"energy\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"pellets\" and r._field == \"value\")\n  |> sort(columns: [\"_time\"])"
+          "query": "from(bucket: \"consumo\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"pellets\" and r._field == \"value\")\n  |> sort(columns: [\"_time\"])"
         }
       ]
     },
@@ -809,14 +809,14 @@
             "type": "influxdb"
           },
           "refId": "Refill",
-          "query": "from(bucket: \"energy\")\n  |> range(start: -10y)\n  |> filter(fn: (r) => r._measurement == \"pellets\" and r._field == \"value\")\n  |> sort(columns: [\"_time\"])\n  |> difference(nonNegative: false)\n  |> filter(fn: (r) => r._value > 0)\n  |> aggregateWindow(every: 1mo, fn: sum, createEmpty: false)\n  |> set(key: \"_field\", value: \"Befüllung\")"
+          "query": "from(bucket: \"consumo\")\n  |> range(start: -10y)\n  |> filter(fn: (r) => r._measurement == \"pellets\" and r._field == \"value\")\n  |> sort(columns: [\"_time\"])\n  |> difference(nonNegative: false)\n  |> filter(fn: (r) => r._value > 0)\n  |> aggregateWindow(every: 1mo, fn: sum, createEmpty: false)\n  |> set(key: \"_field\", value: \"Befüllung\")"
         },
         {
           "datasource": {
             "type": "influxdb"
           },
           "refId": "Consume",
-          "query": "from(bucket: \"energy\")\n  |> range(start: -10y)\n  |> filter(fn: (r) => r._measurement == \"pellets\" and r._field == \"value\")\n  |> sort(columns: [\"_time\"])\n  |> difference(nonNegative: false)\n  |> filter(fn: (r) => r._value < 0)\n  |> map(fn: (r) => ({ r with _value: r._value * -1.0 }))\n  |> aggregateWindow(every: 1mo, fn: sum, createEmpty: false)\n  |> set(key: \"_field\", value: \"Verbrauch\")"
+          "query": "from(bucket: \"consumo\")\n  |> range(start: -10y)\n  |> filter(fn: (r) => r._measurement == \"pellets\" and r._field == \"value\")\n  |> sort(columns: [\"_time\"])\n  |> difference(nonNegative: false)\n  |> filter(fn: (r) => r._value < 0)\n  |> map(fn: (r) => ({ r with _value: r._value * -1.0 }))\n  |> aggregateWindow(every: 1mo, fn: sum, createEmpty: false)\n  |> set(key: \"_field\", value: \"Verbrauch\")"
         }
       ]
     },
@@ -854,28 +854,28 @@
             "type": "influxdb"
           },
           "refId": "Y1",
-          "query": "from(bucket: \"energy\")\n  |> range(start: 2022-01-01T00:00:00Z, stop: 2023-01-01T00:00:00Z)\n  |> filter(fn: (r) => r._measurement == \"pellets\" and r._field == \"value\")\n  |> sort(columns: [\"_time\"])\n  |> difference(nonNegative: false)\n  |> filter(fn: (r) => r._value < 0)\n  |> map(fn: (r) => ({ r with _value: r._value * -1.0 }))\n  |> cumulativeSum()\n  |> set(key: \"_field\", value: \"2022\")"
+          "query": "from(bucket: \"consumo\")\n  |> range(start: 2022-01-01T00:00:00Z, stop: 2023-01-01T00:00:00Z)\n  |> filter(fn: (r) => r._measurement == \"pellets\" and r._field == \"value\")\n  |> sort(columns: [\"_time\"])\n  |> difference(nonNegative: false)\n  |> filter(fn: (r) => r._value < 0)\n  |> map(fn: (r) => ({ r with _value: r._value * -1.0 }))\n  |> cumulativeSum()\n  |> set(key: \"_field\", value: \"2022\")"
         },
         {
           "datasource": {
             "type": "influxdb"
           },
           "refId": "Y2",
-          "query": "from(bucket: \"energy\")\n  |> range(start: 2023-01-01T00:00:00Z, stop: 2024-01-01T00:00:00Z)\n  |> filter(fn: (r) => r._measurement == \"pellets\" and r._field == \"value\")\n  |> sort(columns: [\"_time\"])\n  |> difference(nonNegative: false)\n  |> filter(fn: (r) => r._value < 0)\n  |> map(fn: (r) => ({ r with _value: r._value * -1.0 }))\n  |> cumulativeSum()\n  |> timeShift(duration: -1y)\n  |> set(key: \"_field\", value: \"2023\")"
+          "query": "from(bucket: \"consumo\")\n  |> range(start: 2023-01-01T00:00:00Z, stop: 2024-01-01T00:00:00Z)\n  |> filter(fn: (r) => r._measurement == \"pellets\" and r._field == \"value\")\n  |> sort(columns: [\"_time\"])\n  |> difference(nonNegative: false)\n  |> filter(fn: (r) => r._value < 0)\n  |> map(fn: (r) => ({ r with _value: r._value * -1.0 }))\n  |> cumulativeSum()\n  |> timeShift(duration: -1y)\n  |> set(key: \"_field\", value: \"2023\")"
         },
         {
           "datasource": {
             "type": "influxdb"
           },
           "refId": "Y3",
-          "query": "from(bucket: \"energy\")\n  |> range(start: 2024-01-01T00:00:00Z, stop: 2025-01-01T00:00:00Z)\n  |> filter(fn: (r) => r._measurement == \"pellets\" and r._field == \"value\")\n  |> sort(columns: [\"_time\"])\n  |> difference(nonNegative: false)\n  |> filter(fn: (r) => r._value < 0)\n  |> map(fn: (r) => ({ r with _value: r._value * -1.0 }))\n  |> cumulativeSum()\n  |> timeShift(duration: -2y)\n  |> set(key: \"_field\", value: \"2024\")"
+          "query": "from(bucket: \"consumo\")\n  |> range(start: 2024-01-01T00:00:00Z, stop: 2025-01-01T00:00:00Z)\n  |> filter(fn: (r) => r._measurement == \"pellets\" and r._field == \"value\")\n  |> sort(columns: [\"_time\"])\n  |> difference(nonNegative: false)\n  |> filter(fn: (r) => r._value < 0)\n  |> map(fn: (r) => ({ r with _value: r._value * -1.0 }))\n  |> cumulativeSum()\n  |> timeShift(duration: -2y)\n  |> set(key: \"_field\", value: \"2024\")"
         },
         {
           "datasource": {
             "type": "influxdb"
           },
           "refId": "Y4",
-          "query": "from(bucket: \"energy\")\n  |> range(start: 2025-01-01T00:00:00Z, stop: 2026-01-01T00:00:00Z)\n  |> filter(fn: (r) => r._measurement == \"pellets\" and r._field == \"value\")\n  |> sort(columns: [\"_time\"])\n  |> difference(nonNegative: false)\n  |> filter(fn: (r) => r._value < 0)\n  |> map(fn: (r) => ({ r with _value: r._value * -1.0 }))\n  |> cumulativeSum()\n  |> timeShift(duration: -3y)\n  |> set(key: \"_field\", value: \"2025\")"
+          "query": "from(bucket: \"consumo\")\n  |> range(start: 2025-01-01T00:00:00Z, stop: 2026-01-01T00:00:00Z)\n  |> filter(fn: (r) => r._measurement == \"pellets\" and r._field == \"value\")\n  |> sort(columns: [\"_time\"])\n  |> difference(nonNegative: false)\n  |> filter(fn: (r) => r._value < 0)\n  |> map(fn: (r) => ({ r with _value: r._value * -1.0 }))\n  |> cumulativeSum()\n  |> timeShift(duration: -3y)\n  |> set(key: \"_field\", value: \"2025\")"
         }
       ]
     }
