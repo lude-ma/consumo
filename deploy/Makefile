@@ -45,7 +45,7 @@ dev-restart:
 
 # ── Dashboards ──────────────────────────────────────────────────────────────
 build-dashboards:
-	python3 ../infrastructure/grafana/build_dashboards.py
+	python3 ../infrastructure/grafana/dashboard_template/build_dashboards.py
 
 # ── Help ────────────────────────────────────────────────────────────────────
 help:

@@ -16,10 +16,10 @@ import re
 import sys
 from pathlib import Path
 
-ROOT          = Path(__file__).parent.parent.parent
+ROOT          = Path(__file__).parent.parent.parent.parent
 TEMPLATE_FILE = Path(__file__).parent / "dashboard_template.json"
 I18N_DIR      = ROOT / "apps" / "web" / "i18n"
-OUTPUT_DIR    = Path(__file__).parent / "dashboards"
+OUTPUT_DIR    = Path(__file__).parent.parent / "dashboards"
 
 
 def render(template: str, t: dict) -> str:
