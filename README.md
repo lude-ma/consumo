@@ -78,6 +78,8 @@ The API is not exposed externally in prod!
 
 ## API — Quick reference
 
+Interactive docs (Dev): http://localhost:8201/docs
+
 ```bash
 # All meters
 curl -H "X-API-Key: dev-key" http://localhost:8201/api/v1/meters
