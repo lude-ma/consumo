@@ -4,7 +4,8 @@ PROD_FILES   = -f docker-compose.yml -f docker-compose.prod.yml
 DEV_FILES    = -f docker-compose.yml -f docker-compose.dev.yml
 
 .PHONY: prod-up prod-down prod-logs prod-ps prod-restart \
-        dev-up dev-down dev-logs dev-ps dev-restart help
+        dev-up dev-down dev-logs dev-ps dev-restart \
+        build-dashboards help
 
 # ── Prod ────────────────────────────────────────────────────────────────────
 prod-up:
@@ -37,6 +38,10 @@ dev-ps:
 
 dev-restart:
 	docker compose -p $(DEV_PROJECT) $(DEV_FILES) restart
+
+# ── Dashboards ──────────────────────────────────────────────────────────────
+build-dashboards:
+	python3 ../infrastructure/grafana/build_dashboards.py
 
 # ── Help ────────────────────────────────────────────────────────────────────
 help:

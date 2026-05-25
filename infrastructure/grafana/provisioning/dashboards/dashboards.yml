@@ -3,9 +3,10 @@ apiVersion: 1
 providers:
   - name: Energy Tracker
     orgId: 1
-    folder: Energy
+    folder: Consumo
     type: file
     disableDeletion: false
     editable: true
     options:
       path: /var/lib/grafana/dashboards
+      # Picks up energy_de.json and energy_en.json automatically

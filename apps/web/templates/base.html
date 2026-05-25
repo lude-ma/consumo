@@ -1,93 +1,52 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="{{ current_lang }}">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{% block title %}Energie-Tracker{% endblock %}</title>
+  <title>{% block title %}{{ t.app_name }}{% endblock %}</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap');
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg: #0f1117;
-      --surface: #1a1d27;
-      --border: #2a2d3a;
-      --text: #e8eaf0;
-      --muted: #6b7080;
-      --strom: #f59e0b;
-      --wasser: #3b82f6;
-      --pellets: #a16207;
-      --success: #22c55e;
-      --error: #ef4444;
+      --bg: #0f1117; --surface: #1a1d27; --border: #2a2d3a;
+      --text: #e8eaf0; --muted: #6b7080;
+      --strom: #f59e0b; --wasser: #3b82f6; --pellets: #a16207;
+      --success: #22c55e; --error: #ef4444;
     }
 
-    body {
-      font-family: 'Syne', sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      min-height: 100vh;
-      padding: 0;
-    }
+    body { font-family: 'Syne', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
 
     nav {
-      background: var(--surface);
-      border-bottom: 1px solid var(--border);
-      padding: 1rem 2rem;
-      display: flex;
-      align-items: center;
-      gap: 2rem;
+      background: var(--surface); border-bottom: 1px solid var(--border);
+      padding: 1rem 2rem; display: flex; align-items: center; gap: 2rem;
     }
-
-    nav .logo {
-      font-weight: 800;
-      font-size: 1.1rem;
-      letter-spacing: -0.02em;
-      color: var(--text);
-      text-decoration: none;
-    }
-
+    nav .logo { font-weight: 800; font-size: 1.1rem; letter-spacing: -0.02em; color: var(--text); text-decoration: none; }
     nav .logo span { color: var(--strom); }
-
-    nav a {
-      color: var(--muted);
-      text-decoration: none;
-      font-size: 0.9rem;
-      transition: color 0.2s;
-    }
+    nav .nav-links { display: flex; gap: 1.5rem; align-items: center; }
+    nav a { color: var(--muted); text-decoration: none; font-size: 0.9rem; transition: color 0.2s; }
     nav a:hover { color: var(--text); }
 
-    main { max-width: 900px; margin: 0 auto; padding: 2.5rem 1.5rem; }
-
-    h1 {
-      font-size: 2rem;
-      font-weight: 800;
-      letter-spacing: -0.03em;
-      margin-bottom: 0.5rem;
+    .lang-switcher { margin-left: auto; display: flex; gap: 0.4rem; align-items: center; }
+    .lang-btn {
+      padding: 0.2rem 0.55rem; border-radius: 4px; font-size: 0.78rem;
+      font-weight: 600; text-decoration: none; color: var(--muted);
+      border: 1px solid transparent; transition: all 0.15s;
     }
+    .lang-btn:hover { color: var(--text); border-color: var(--border); }
+    .lang-btn.active { color: var(--strom); border-color: rgba(245,158,11,.4); background: rgba(245,158,11,.08); }
+
+    main { max-width: 960px; margin: 0 auto; padding: 2.5rem 1.5rem; }
+
+    h1 { font-size: 2rem; font-weight: 800; letter-spacing: -0.03em; margin-bottom: 0.5rem; }
 
     .flash-list { list-style: none; margin-bottom: 1.5rem; }
-    .flash-list li {
-      padding: 0.75rem 1rem;
-      border-radius: 6px;
-      font-size: 0.9rem;
-      margin-bottom: 0.5rem;
-    }
+    .flash-list li { padding: 0.75rem 1rem; border-radius: 6px; font-size: 0.9rem; margin-bottom: 0.5rem; }
     .flash-list li.success { background: rgba(34,197,94,.15); color: var(--success); border: 1px solid rgba(34,197,94,.3); }
     .flash-list li.error   { background: rgba(239,68,68,.15);  color: var(--error);   border: 1px solid rgba(239,68,68,.3); }
 
-    .btn {
-      display: inline-block;
-      padding: 0.65rem 1.4rem;
-      border-radius: 6px;
-      font-family: 'Syne', sans-serif;
-      font-size: 0.9rem;
-      font-weight: 600;
-      cursor: pointer;
-      border: none;
-      transition: opacity 0.2s, transform 0.1s;
-      text-decoration: none;
-    }
+    .btn { display: inline-block; padding: 0.65rem 1.4rem; border-radius: 6px; font-family: 'Syne', sans-serif; font-size: 0.9rem; font-weight: 600; cursor: pointer; border: none; transition: opacity 0.2s, transform 0.1s; text-decoration: none; }
     .btn:hover { opacity: 0.85; }
     .btn:active { transform: scale(0.98); }
     .btn-primary { background: var(--strom); color: #000; }
@@ -97,17 +56,25 @@
 </head>
 <body>
   <nav>
-    <a href="/" class="logo">energie<span>⚡</span>tracker</a>
-    <a href="/">Übersicht</a>
-    <a href="http://localhost:3000" target="_blank">Grafana →</a>
+    <a href="/" class="logo">{{ t.app_name }}<span>⚡</span></a>
+    <div class="nav-links">
+      <a href="/">{{ t.nav_overview }}</a>
+      <a href="http://localhost:3000" target="_blank">{{ t.nav_grafana }}</a>
+    </div>
+    <div class="lang-switcher">
+      {% for lang in supported_langs %}
+        <a href="/set-lang/{{ lang }}"
+           class="lang-btn {% if lang == current_lang %}active{% endif %}">
+          {{ lang | upper }}
+        </a>
+      {% endfor %}
+    </div>
   </nav>
   <main>
     {% with messages = get_flashed_messages(with_categories=true) %}
       {% if messages %}
         <ul class="flash-list">
-          {% for cat, msg in messages %}
-            <li class="{{ cat }}">{{ msg }}</li>
-          {% endfor %}
+          {% for cat, msg in messages %}<li class="{{ cat }}">{{ msg }}</li>{% endfor %}
         </ul>
       {% endif %}
     {% endwith %}

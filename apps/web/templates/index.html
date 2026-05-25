@@ -1,42 +1,24 @@
 {% extends "base.html" %}
-{% block title %}Energie-Tracker – Übersicht{% endblock %}
+{% block title %}{{ t.app_name }} – {{ t.nav_overview }}{% endblock %}
 
 {% block head %}
 <style>
   .subtitle { color: var(--muted); margin-bottom: 2.5rem; font-size: 1rem; }
-
-  .section-title {
-    font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em;
-    color: var(--muted); margin: 2rem 0 0.75rem; font-weight: 600;
-  }
-
+  .section-title { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin: 2rem 0 0.75rem; font-weight: 600; }
   .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.25rem; }
-
-  .card {
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: 12px; padding: 1.75rem;
-    text-decoration: none; color: var(--text);
-    transition: border-color 0.2s, transform 0.2s; display: block;
-  }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.75rem; text-decoration: none; color: var(--text); transition: border-color 0.2s, transform 0.2s; display: block; }
   .card:hover { transform: translateY(-3px); }
   .card .icon  { font-size: 2.2rem; margin-bottom: 0.75rem; }
   .card .label { font-weight: 800; font-size: 1.15rem; margin-bottom: 0.2rem; }
   .card .unit  { font-size: 0.82rem; color: var(--muted); font-family: 'Space Mono', monospace; }
-
-  .type-badge {
-    display: inline-flex; align-items: center; gap: 0.3rem;
-    padding: 0.2rem 0.6rem; border-radius: 99px;
-    font-size: 0.75rem; font-weight: 600; margin-top: 0.5rem;
-  }
+  .type-badge { display: inline-flex; align-items: center; gap: 0.3rem; padding: 0.2rem 0.6rem; border-radius: 99px; font-size: 0.75rem; font-weight: 600; margin-top: 0.5rem; }
   .type-counter { background: rgba(245,158,11,.12); color: #f59e0b; }
   .type-storage { background: rgba(161,98,7,.15);   color: #d97706; }
   .type-sensor  { background: rgba(99,102,241,.15); color: #818cf8; }
-
   .card .actions { margin-top: 1.25rem; display: flex; gap: 0.75rem; }
   .tag { display: inline-block; padding: 0.3rem 0.75rem; border-radius: 4px; font-size: 0.8rem; font-weight: 600; text-decoration: none; }
   .tag-enter   { background: rgba(245,158,11,.15); color: var(--strom); }
   .tag-history { background: var(--border); color: var(--muted); }
-
   .card-strom:hover   { border-color: rgba(245,158,11,.6); }
   .card-wasser:hover  { border-color: rgba(59,130,246,.6); }
   .card-pellets:hover { border-color: rgba(161,98,7,.6); }
@@ -44,32 +26,30 @@
 {% endblock %}
 
 {% block content %}
-<h1>Verbrauchstracker</h1>
-<p class="subtitle">Zählerstände, Lagerbestände und Messwerte erfassen</p>
+<h1>{{ t.page_overview_title }}</h1>
+<p class="subtitle">{{ t.page_overview_subtitle }}</p>
 
-{% set groups = [("counter","Zählerstände"), ("storage","Lagerbestände"), ("sensor","Messwerte")] %}
+{% set groups = [("counter", t.section_counter), ("storage", t.section_storage), ("sensor", t.section_sensor)] %}
 {% for type_key, type_title in groups %}
   {% set ns = namespace(found=false) %}
-  {% for key, meta in meters.items() %}{% if meta.meter_type == type_key %}{% set ns.found = true %}{% endif %}{% endfor %}
+  {% for key, meta in meters.items() %}{% if meta.meter_type.value == type_key %}{% set ns.found = true %}{% endif %}{% endfor %}
   {% if ns.found %}
-  <div class="section-title">{{ type_labels[type_key][1] }} {{ type_title }}</div>
+  <div class="section-title">{{ type_title }}</div>
   <div class="cards">
-    {% for key, meta in meters.items() %}
-    {% if meta.meter_type == type_key %}
+    {% for key, meta in meters.items() %}{% if meta.meter_type.value == type_key %}
     <div class="card card-{{ key }}">
       <div class="icon">{{ meta.icon }}</div>
       <div class="label">{{ meta.label }}</div>
       <div class="unit">{{ meta.unit }}</div>
-      <span class="type-badge type-{{ meta.meter_type }}">
-        {{ type_labels[meta.meter_type][0] }}
+      <span class="type-badge type-{{ meta.meter_type.value }}">
+        {{ t["type_" ~ meta.meter_type.value] }}
       </span>
       <div class="actions">
-        <a href="/enter/{{ key }}" class="tag tag-enter">+ Wert eingeben</a>
-        <a href="/history/{{ key }}" class="tag tag-history">Verlauf</a>
+        <a href="/enter/{{ key }}" class="tag tag-enter">{{ t.action_enter }}</a>
+        <a href="/history/{{ key }}" class="tag tag-history">{{ t.action_history }}</a>
       </div>
     </div>
-    {% endif %}
-    {% endfor %}
+    {% endif %}{% endfor %}
   </div>
   {% endif %}
 {% endfor %}
