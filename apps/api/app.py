@@ -196,7 +196,7 @@ def create_reading(meter: str, body: ReadingIn) -> Response[ReadingCreated]:
                 .time(ts, WritePrecision.SECONDS)
             )
             if body.note:
-                point = point.tag("note", body.note.strip())
+                point = point.field("note", body.note.strip())
             write_api.write(bucket=INFLUXDB_BUCKET, org=INFLUXDB_ORG, record=point)
     except Exception as e:
         logger.error(f"Write error for {meter}: {e}")
@@ -220,11 +220,13 @@ def get_readings(
     _require_meter(meter)
 
     desc = "true" if order == "desc" else "false"
+    # pivot to get both value and note fields per timestamp
     query = f'''
 from(bucket: "{INFLUXDB_BUCKET}")
   |> range(start: {_to_flux_time(start)}, stop: {_to_flux_time(end)})
   |> filter(fn: (r) => r._measurement == "{meter}")
-  |> filter(fn: (r) => r._field == "value")
+  |> filter(fn: (r) => r._field == "value" or r._field == "note")
+  |> pivot(rowKey: ["_time"], columnKey: ["_field"], valueColumn: "_value")
   |> sort(columns: ["_time"], desc: {desc})
   |> limit(n: {limit})
 '''
@@ -238,7 +240,7 @@ from(bucket: "{INFLUXDB_BUCKET}")
     rows = [
         ReadingOut(
             timestamp=record.get_time().isoformat(),
-            value=record.get_value(),
+            value=record.values.get("value", 0.0),
             unit=record.values.get("unit", ""),
             note=record.values.get("note") or None,
         )
@@ -293,3 +295,129 @@ def get_stats(meter: str) -> Response[dict]:
         data=stats,
         meta=MetaEnvelope(meter=meter, meter_type=meta.meter_type.value, unit=meta.unit),
     )
+
+
+# ---------------------------------------------------------------------------
+# Multi-value readings (for sensors with multiple fields e.g. TP357)
+# POST /api/v1/sensors/{sensor_id}/readings
+# Body: { "values": {"temperature": 21.5, "humidity": 58, "battery": 95}, "timestamp": "..." }
+# ---------------------------------------------------------------------------
+
+class MultiReadingIn(BaseModel):
+    values:    dict[str, float]
+    timestamp: datetime | None = None
+    note:      str | None = None
+
+    @field_validator("values")
+    @classmethod
+    def values_must_be_finite(cls, v):
+        import math
+        for key, val in v.items():
+            if math.isnan(val) or math.isinf(val):
+                raise ValueError(f"value for '{key}' must be a finite number")
+        return v
+
+
+class MultiReadingCreated(BaseModel):
+    sensor:    str
+    values:    dict[str, float]
+    timestamp: str
+    note:      str | None
+
+
+class SensorOut(BaseModel):
+    id:          str
+    description: str
+    fields:      list[str]
+
+
+@app.get("/api/v1/sensors", tags=["sensors"],
+         dependencies=[Security(require_api_key)])
+def list_sensors() -> Response[list[SensorOut]]:
+    """List all registered multi-field sensors (e.g. TP357 with temp+humidity)."""
+    from consumo_common.models import SENSORS
+    sensors = [
+        SensorOut(id=k, description=v.description, fields=v.fields)
+        for k, v in SENSORS.items()
+    ]
+    return Response(data=sensors, meta=MetaEnvelope(count=len(sensors)))
+
+
+@app.post("/api/v1/sensors/{sensor_id}/readings", status_code=201, tags=["sensors"],
+          dependencies=[Security(require_api_key)])
+def create_sensor_reading(sensor_id: str, body: MultiReadingIn) -> Response[MultiReadingCreated]:
+    """
+    Write a multi-field reading for a sensor.
+    All fields are stored as separate InfluxDB fields on the same measurement+timestamp.
+    """
+    from consumo_common.models import SENSORS
+    if sensor_id not in SENSORS:
+        raise HTTPException(status_code=404, detail=f"Unknown sensor '{sensor_id}'")
+
+    sensor = SENSORS[sensor_id]
+
+    # Warn about unknown fields but don't reject — allows forward-compat
+    unknown = set(body.values) - set(sensor.fields)
+    if unknown:
+        logger.warning(f"Sensor '{sensor_id}' received unknown fields: {unknown}")
+
+    ts = body.timestamp or datetime.now(timezone.utc)
+
+    try:
+        with get_client() as client:
+            write_api = client.write_api(write_options=SYNCHRONOUS)
+            point = Point(sensor_id).tag("sensor_type", sensor.sensor_type).time(ts, WritePrecision.SECONDS)
+            for field, val in body.values.items():
+                point = point.field(field, float(val))
+            if body.note:
+                point = point.field("note", body.note.strip())
+            write_api.write(bucket=INFLUXDB_BUCKET, org=INFLUXDB_ORG, record=point)
+    except Exception as e:
+        logger.error(f"Write error for sensor {sensor_id}: {e}")
+        raise HTTPException(status_code=502, detail="Failed to write to database")
+
+    return Response(data=MultiReadingCreated(
+        sensor=sensor_id, values=body.values,
+        timestamp=ts.isoformat(), note=body.note,
+    ))
+
+
+@app.get("/api/v1/sensors/{sensor_id}/readings", tags=["sensors"],
+         dependencies=[Security(require_api_key)])
+def get_sensor_readings(
+    sensor_id: str,
+    start: Annotated[str, Query(description="Flux duration or ISO 8601")] = "-30d",
+    end:   Annotated[str, Query(description="Flux duration or ISO 8601")] = "now()",
+    limit: Annotated[int, Query(ge=1, le=5000)] = 500,
+    order: Annotated[str, Query(pattern="^(asc|desc)$")] = "desc",
+) -> Response[list[dict]]:
+    from consumo_common.models import SENSORS
+    if sensor_id not in SENSORS:
+        raise HTTPException(status_code=404, detail=f"Unknown sensor '{sensor_id}'")
+
+    desc = "true" if order == "desc" else "false"
+    query = f'''
+from(bucket: "{INFLUXDB_BUCKET}")
+  |> range(start: {_to_flux_time(start)}, stop: {_to_flux_time(end)})
+  |> filter(fn: (r) => r._measurement == "{sensor_id}")
+  |> pivot(rowKey: ["_time"], columnKey: ["_field"], valueColumn: "_value")
+  |> sort(columns: ["_time"], desc: {desc})
+  |> limit(n: {limit})
+'''
+    try:
+        with get_client() as client:
+            tables = client.query_api().query(query, org=INFLUXDB_ORG)
+    except Exception as e:
+        logger.error(f"Query error for sensor {sensor_id}: {e}")
+        raise HTTPException(status_code=502, detail="Failed to query database")
+
+    rows = []
+    for table in tables:
+        for record in table.records:
+            row = {"timestamp": record.get_time().isoformat()}
+            for field in SENSORS[sensor_id].fields:
+                if field in record.values:
+                    row[field] = record.values[field]
+            rows.append(row)
+
+    return Response(data=rows, meta=MetaEnvelope(meter=sensor_id, count=len(rows)))

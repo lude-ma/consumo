@@ -53,6 +53,7 @@
   "flash_invalid_value": "Ungültiger Wert — bitte eine Zahl eingeben.",
   "flash_api_error": "API-Fehler: {message}",
   "flash_load_error": "Fehler beim Laden der Daten.",
+  "grafana_annotation_notes": "Bemerkung",
   "grafana_dashboard_title": "Verbrauchsübersicht",
   "grafana_section_electricity": "⚡ Strom",
   "grafana_section_water": "💧 Wasser",

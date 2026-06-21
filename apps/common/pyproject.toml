@@ -7,6 +7,7 @@ name = "consumo-common"
 version = "0.1.0"
 description = "Shared models and config for Consumo"
 requires-python = ">=3.11"
+dependencies = ["pyyaml>=6.0"]
 
 [tool.setuptools.packages.find]
 where = ["."]

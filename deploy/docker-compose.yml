@@ -41,6 +41,8 @@ services:
       context: ../apps
       dockerfile: api/Dockerfile
     restart: unless-stopped
+    volumes:
+      - ../config:/config:ro
     environment:
       - INFLUXDB_URL=http://influxdb:8086
       - INFLUXDB_TOKEN=${INFLUXDB_TOKEN}
@@ -57,6 +59,8 @@ services:
       context: ../apps
       dockerfile: web/Dockerfile
     restart: unless-stopped
+    volumes:
+      - ../config:/config:ro
     environment:
       - API_URL=http://api:8200
       - API_KEY=${API_KEY_WEB}

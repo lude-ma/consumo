@@ -1,0 +1,133 @@
+# ---------------------------------------------------------------------------
+# Consumo — Meter & Sensor Registry
+#
+# meter_type:
+#   counter  – monotonically increasing absolute reading (electricity, water)
+#   storage  – level that rises/falls (pellet tank)
+#   sensor   – arbitrary measurement, single value (pressure, CO2...)
+#   multisensor – multiple fields per reading (TP357: temp + humidity + battery)
+#
+# Fields reference i18n keys: meter_{id}_label in apps/web/i18n/{lang}.json
+# ---------------------------------------------------------------------------
+
+meters:
+  strom:
+    icon: "⚡"
+    color: "#f59e0b"
+    meter_type: counter
+    unit: kWh
+
+  wasser:
+    icon: "💧"
+    color: "#3b82f6"
+    meter_type: counter
+    unit: "m³"
+
+  pellets:
+    icon: "🪵"
+    color: "#a16207"
+    meter_type: counter
+    unit: kg
+
+sensors:
+  # ThermoPro TP357 — one entry per physical device
+  # Add/remove entries here; no code changes needed.
+  wohnzimmer:
+    icon: "🌡️"
+    color: "#818cf8"
+    meter_type: multisensor
+    sensor_type: tp357
+    fields:
+      temperature: "°C"
+      humidity: "%RH"
+      battery: "%"
+
+  schlafzimmer:
+    icon: "🌡️"
+    color: "#818cf8"
+    meter_type: multisensor
+    sensor_type: tp357
+    fields:
+      temperature: "°C"
+      humidity: "%RH"
+      battery: "%"
+
+  kinderzimmer:
+    icon: "🌡️"
+    color: "#818cf8"
+    meter_type: multisensor
+    sensor_type: tp357
+    fields:
+      temperature: "°C"
+      humidity: "%RH"
+      battery: "%"
+
+  kueche:
+    icon: "🌡️"
+    color: "#818cf8"
+    meter_type: multisensor
+    sensor_type: tp357
+    fields:
+      temperature: "°C"
+      humidity: "%RH"
+      battery: "%"
+
+  bad:
+    icon: "🌡️"
+    color: "#818cf8"
+    meter_type: multisensor
+    sensor_type: tp357
+    fields:
+      temperature: "°C"
+      humidity: "%RH"
+      battery: "%"
+
+  buero:
+    icon: "🌡️"
+    color: "#818cf8"
+    meter_type: multisensor
+    sensor_type: tp357
+    fields:
+      temperature: "°C"
+      humidity: "%RH"
+      battery: "%"
+
+  keller:
+    icon: "🌡️"
+    color: "#6b7280"
+    meter_type: multisensor
+    sensor_type: tp357
+    fields:
+      temperature: "°C"
+      humidity: "%RH"
+      battery: "%"
+
+  dachboden:
+    icon: "🌡️"
+    color: "#6b7280"
+    meter_type: multisensor
+    sensor_type: tp357
+    fields:
+      temperature: "°C"
+      humidity: "%RH"
+      battery: "%"
+
+  garage:
+    icon: "🌡️"
+    color: "#6b7280"
+    meter_type: multisensor
+    sensor_type: tp357
+    fields:
+      temperature: "°C"
+      humidity: "%RH"
+      battery: "%"
+
+  aussen:
+    icon: "🌡️"
+    color: "#22c55e"
+    meter_type: multisensor
+    sensor_type: tp357
+    fields:
+      temperature: "°C"
+      humidity: "%RH"
+      battery: "%"

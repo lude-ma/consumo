@@ -1,0 +1,38 @@
+version: "3.8"
+
+# ---------------------------------------------------------------------------
+# Consumo — Raspberry Pi Scanner
+#
+# Runs on the Pi, connects to the Consumo API on the NAS.
+#
+# Setup:
+#   1. Copy this file and config/ to the Pi
+#   2. Edit .env.pi with your NAS IP and API key
+#   3. docker compose -f docker-compose.pi.yml --env-file .env.pi up -d
+#
+# Modes:
+#   Default (scan):   docker compose up -d
+#   Import history:   docker compose run --rm scanner python main.py --mode history
+#   Discover sensors: docker compose run --rm scanner python main.py --mode discover
+# ---------------------------------------------------------------------------
+
+services:
+  scanner:
+    build:
+      context: ../apps/sensors/tp357
+    container_name: consumo-scanner
+    restart: unless-stopped
+    network_mode: host        # required for BLE on Linux
+    privileged: true          # required for /dev/hci0 access
+    environment:
+      - CONSUMO_API_URL=${CONSUMO_API_URL}
+      - CONSUMO_API_KEY=${CONSUMO_API_KEY}
+      - CONSUMO_SENSORS_PATH=/config/sensors.yml
+      - CONSUMO_QUEUE_DB=/data/queue.db
+    volumes:
+      - ../config:/config:ro
+      - scanner-data:/data        # offline queue — survives container restarts
+    command: ["python", "main.py", "--mode", "scan"]
+
+volumes:
+  scanner-data:

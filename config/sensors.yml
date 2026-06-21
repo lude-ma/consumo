@@ -1,0 +1,60 @@
+# ---------------------------------------------------------------------------
+# TP357 Sensor MAC Address Mapping
+#
+# Maps Bluetooth MAC addresses to sensor IDs defined in meters.yml.
+# Run `python main.py --mode discover` to find MAC addresses.
+#
+# mac:       Bluetooth MAC address of the sensor
+# sensor_id: Must match a key under `sensors:` in meters.yml
+# enabled:   Set to false to temporarily disable a sensor
+# ---------------------------------------------------------------------------
+
+sensors:
+  - mac: "AA:BB:CC:DD:EE:01"
+    sensor_id: wohnzimmer
+    enabled: true
+
+  - mac: "AA:BB:CC:DD:EE:02"
+    sensor_id: schlafzimmer
+    enabled: true
+
+  - mac: "AA:BB:CC:DD:EE:03"
+    sensor_id: kinderzimmer
+    enabled: true
+
+  - mac: "AA:BB:CC:DD:EE:04"
+    sensor_id: kueche
+    enabled: true
+
+  - mac: "AA:BB:CC:DD:EE:05"
+    sensor_id: bad
+    enabled: true
+
+  - mac: "AA:BB:CC:DD:EE:06"
+    sensor_id: buero
+    enabled: true
+
+  - mac: "AA:BB:CC:DD:EE:07"
+    sensor_id: keller
+    enabled: true
+
+  - mac: "AA:BB:CC:DD:EE:08"
+    sensor_id: dachboden
+    enabled: true
+
+  - mac: "AA:BB:CC:DD:EE:09"
+    sensor_id: garage
+    enabled: true
+
+  - mac: "AA:BB:CC:DD:EE:10"
+    sensor_id: aussen
+    enabled: true
+
+# Scanner settings
+settings:
+  # How often to write a reading per sensor (seconds)
+  write_interval: 60
+  # BLE scan timeout for active history fetch (seconds)
+  scan_timeout: 30
+  # Retry failed API writes after (seconds)
+  retry_interval: 30

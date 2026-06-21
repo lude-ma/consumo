@@ -555,7 +555,7 @@
     {
       "id": 21,
       "type": "stat",
-      "title": "Current level",
+      "title": "Last 30 days",
       "gridPos": {
         "x": 0,
         "y": 25,
@@ -568,14 +568,14 @@
           "decimals": 0,
           "color": {
             "mode": "fixed",
-            "fixedColor": "#3b82f6"
+            "fixedColor": "#a16207"
           }
         }
       },
       "options": {
         "reduceOptions": {
           "calcs": [
-            "last"
+            "sum"
           ]
         },
         "colorMode": "value"
@@ -586,14 +586,14 @@
             "type": "influxdb"
           },
           "refId": "A",
-          "query": "from(bucket: \"consumo\")\n  |> range(start: -10y)\n  |> filter(fn: (r) => r._measurement == \"pellets\" and r._field == \"value\")\n  |> last()"
+          "query": "from(bucket: \"consumo\")\n  |> range(start: -31d)\n  |> filter(fn: (r) => r._measurement == \"pellets\" and r._field == \"value\")\n  |> sort(columns: [\"_time\"])\n  |> difference(nonNegative: true)"
         }
       ]
     },
     {
       "id": 22,
       "type": "stat",
-      "title": "▲ Total refilled",
+      "title": "Last 365 days",
       "gridPos": {
         "x": 4,
         "y": 25,
@@ -606,7 +606,7 @@
           "decimals": 0,
           "color": {
             "mode": "fixed",
-            "fixedColor": "#22c55e"
+            "fixedColor": "#a16207"
           }
         }
       },
@@ -624,14 +624,14 @@
             "type": "influxdb"
           },
           "refId": "A",
-          "query": "from(bucket: \"consumo\")\n  |> range(start: -10y)\n  |> filter(fn: (r) => r._measurement == \"pellets\" and r._field == \"value\")\n  |> sort(columns: [\"_time\"])\n  |> difference(nonNegative: false)\n  |> filter(fn: (r) => r._value > 0)"
+          "query": "from(bucket: \"consumo\")\n  |> range(start: -366d)\n  |> filter(fn: (r) => r._measurement == \"pellets\" and r._field == \"value\")\n  |> sort(columns: [\"_time\"])\n  |> difference(nonNegative: true)"
         }
       ]
     },
     {
       "id": 23,
       "type": "stat",
-      "title": "▼ Total consumed",
+      "title": "Ø per month",
       "gridPos": {
         "x": 8,
         "y": 25,
@@ -644,14 +644,14 @@
           "decimals": 0,
           "color": {
             "mode": "fixed",
-            "fixedColor": "#ef4444"
+            "fixedColor": "#a16207"
           }
         }
       },
       "options": {
         "reduceOptions": {
           "calcs": [
-            "sum"
+            "mean"
           ]
         },
         "colorMode": "value"
@@ -662,14 +662,14 @@
             "type": "influxdb"
           },
           "refId": "A",
-          "query": "from(bucket: \"consumo\")\n  |> range(start: -10y)\n  |> filter(fn: (r) => r._measurement == \"pellets\" and r._field == \"value\")\n  |> sort(columns: [\"_time\"])\n  |> difference(nonNegative: false)\n  |> filter(fn: (r) => r._value < 0)\n  |> map(fn: (r) => ({ r with _value: r._value * -1.0 }))"
+          "query": "from(bucket: \"consumo\")\n  |> range(start: -10y)\n  |> filter(fn: (r) => r._measurement == \"pellets\" and r._field == \"value\")\n  |> sort(columns: [\"_time\"])\n  |> difference(nonNegative: true)\n  |> aggregateWindow(every: 1mo, fn: sum, createEmpty: false)\n  |> mean()"
         }
       ]
     },
     {
       "id": 24,
       "type": "stat",
-      "title": "Ø consumed / month",
+      "title": "Ø per year",
       "gridPos": {
         "x": 12,
         "y": 25,
@@ -700,14 +700,14 @@
             "type": "influxdb"
           },
           "refId": "A",
-          "query": "from(bucket: \"consumo\")\n  |> range(start: -10y)\n  |> filter(fn: (r) => r._measurement == \"pellets\" and r._field == \"value\")\n  |> sort(columns: [\"_time\"])\n  |> difference(nonNegative: false)\n  |> filter(fn: (r) => r._value < 0)\n  |> map(fn: (r) => ({ r with _value: r._value * -1.0 }))\n  |> aggregateWindow(every: 1mo, fn: sum, createEmpty: false)"
+          "query": "from(bucket: \"consumo\")\n  |> range(start: -10y)\n  |> filter(fn: (r) => r._measurement == \"pellets\" and r._field == \"value\")\n  |> sort(columns: [\"_time\"])\n  |> difference(nonNegative: true)\n  |> aggregateWindow(every: 1y, fn: sum, createEmpty: false)\n  |> mean()"
         }
       ]
     },
     {
       "id": 25,
-      "type": "timeseries",
-      "title": "🪵 Pellets — Fill level history",
+      "type": "barchart",
+      "title": "🪵 Pellets — Monthly consumption by year",
       "gridPos": {
         "x": 0,
         "y": 28,
@@ -719,8 +719,7 @@
           "unit": "short",
           "custom": {
             "lineWidth": 2,
-            "fillOpacity": 20,
-            "lineInterpolation": "stepAfter"
+            "fillOpacity": 20
           },
           "color": {
             "mode": "fixed",
@@ -743,80 +742,7 @@
             "type": "influxdb"
           },
           "refId": "A",
-          "query": "from(bucket: \"consumo\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"pellets\" and r._field == \"value\")\n  |> sort(columns: [\"_time\"])"
-        }
-      ]
-    },
-    {
-      "id": 26,
-      "type": "barchart",
-      "title": "🪵 Pellets — Refills & consumption per month",
-      "gridPos": {
-        "x": 12,
-        "y": 28,
-        "w": 12,
-        "h": 8
-      },
-      "fieldConfig": {
-        "defaults": {
-          "unit": "short"
-        },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "▲ Total refilled"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "mode": "fixed",
-                  "fixedColor": "#22c55e"
-                }
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "▼ Total consumed"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "mode": "fixed",
-                  "fixedColor": "#ef4444"
-                }
-              }
-            ]
-          }
-        ]
-      },
-      "options": {
-        "barWidth": 0.6,
-        "groupWidth": 0.7,
-        "stacking": "none",
-        "legend": {
-          "displayMode": "list",
-          "placement": "bottom"
-        }
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "influxdb"
-          },
-          "refId": "Refill",
-          "query": "from(bucket: \"consumo\")\n  |> range(start: -10y)\n  |> filter(fn: (r) => r._measurement == \"pellets\" and r._field == \"value\")\n  |> sort(columns: [\"_time\"])\n  |> difference(nonNegative: false)\n  |> filter(fn: (r) => r._value > 0)\n  |> aggregateWindow(every: 1mo, fn: sum, createEmpty: false)\n  |> set(key: \"_field\", value: \"Befüllung\")"
-        },
-        {
-          "datasource": {
-            "type": "influxdb"
-          },
-          "refId": "Consume",
-          "query": "from(bucket: \"consumo\")\n  |> range(start: -10y)\n  |> filter(fn: (r) => r._measurement == \"pellets\" and r._field == \"value\")\n  |> sort(columns: [\"_time\"])\n  |> difference(nonNegative: false)\n  |> filter(fn: (r) => r._value < 0)\n  |> map(fn: (r) => ({ r with _value: r._value * -1.0 }))\n  |> aggregateWindow(every: 1mo, fn: sum, createEmpty: false)\n  |> set(key: \"_field\", value: \"Verbrauch\")"
+          "query": "from(bucket: \"consumo\")\n  |> range(start: -10y)\n  |> filter(fn: (r) => r._measurement == \"pellets\" and r._field == \"value\")\n  |> sort(columns: [\"_time\"])\n  |> difference(nonNegative: true)\n  |> aggregateWindow(every: 1mo, fn: sum, createEmpty: false)\n  |> map(fn: (r) => ({ r with year: string(v: date.year(t: r._time)), month: date.month(t: r._time) }))\n  |> group(columns: [\"year\"])"
         }
       ]
     },
@@ -854,30 +780,56 @@
             "type": "influxdb"
           },
           "refId": "Y1",
-          "query": "from(bucket: \"consumo\")\n  |> range(start: 2022-01-01T00:00:00Z, stop: 2023-01-01T00:00:00Z)\n  |> filter(fn: (r) => r._measurement == \"pellets\" and r._field == \"value\")\n  |> sort(columns: [\"_time\"])\n  |> difference(nonNegative: false)\n  |> filter(fn: (r) => r._value < 0)\n  |> map(fn: (r) => ({ r with _value: r._value * -1.0 }))\n  |> cumulativeSum()\n  |> set(key: \"_field\", value: \"2022\")"
+          "query": "from(bucket: \"consumo\")\n  |> range(start: 2022-01-01T00:00:00Z, stop: 2023-01-01T00:00:00Z)\n  |> filter(fn: (r) => r._measurement == \"pellets\" and r._field == \"value\")\n  |> sort(columns: [\"_time\"])\n  |> difference(nonNegative: true)\n  |> cumulativeSum()\n  |> set(key: \"_field\", value: \"2022\")"
         },
         {
           "datasource": {
             "type": "influxdb"
           },
           "refId": "Y2",
-          "query": "from(bucket: \"consumo\")\n  |> range(start: 2023-01-01T00:00:00Z, stop: 2024-01-01T00:00:00Z)\n  |> filter(fn: (r) => r._measurement == \"pellets\" and r._field == \"value\")\n  |> sort(columns: [\"_time\"])\n  |> difference(nonNegative: false)\n  |> filter(fn: (r) => r._value < 0)\n  |> map(fn: (r) => ({ r with _value: r._value * -1.0 }))\n  |> cumulativeSum()\n  |> timeShift(duration: -1y)\n  |> set(key: \"_field\", value: \"2023\")"
+          "query": "from(bucket: \"consumo\")\n  |> range(start: 2023-01-01T00:00:00Z, stop: 2024-01-01T00:00:00Z)\n  |> filter(fn: (r) => r._measurement == \"pellets\" and r._field == \"value\")\n  |> sort(columns: [\"_time\"])\n  |> difference(nonNegative: true)\n  |> cumulativeSum()\n  |> timeShift(duration: -1y)\n  |> set(key: \"_field\", value: \"2023\")"
         },
         {
           "datasource": {
             "type": "influxdb"
           },
           "refId": "Y3",
-          "query": "from(bucket: \"consumo\")\n  |> range(start: 2024-01-01T00:00:00Z, stop: 2025-01-01T00:00:00Z)\n  |> filter(fn: (r) => r._measurement == \"pellets\" and r._field == \"value\")\n  |> sort(columns: [\"_time\"])\n  |> difference(nonNegative: false)\n  |> filter(fn: (r) => r._value < 0)\n  |> map(fn: (r) => ({ r with _value: r._value * -1.0 }))\n  |> cumulativeSum()\n  |> timeShift(duration: -2y)\n  |> set(key: \"_field\", value: \"2024\")"
+          "query": "from(bucket: \"consumo\")\n  |> range(start: 2024-01-01T00:00:00Z, stop: 2025-01-01T00:00:00Z)\n  |> filter(fn: (r) => r._measurement == \"pellets\" and r._field == \"value\")\n  |> sort(columns: [\"_time\"])\n  |> difference(nonNegative: true)\n  |> cumulativeSum()\n  |> timeShift(duration: -2y)\n  |> set(key: \"_field\", value: \"2024\")"
         },
         {
           "datasource": {
             "type": "influxdb"
           },
           "refId": "Y4",
-          "query": "from(bucket: \"consumo\")\n  |> range(start: 2025-01-01T00:00:00Z, stop: 2026-01-01T00:00:00Z)\n  |> filter(fn: (r) => r._measurement == \"pellets\" and r._field == \"value\")\n  |> sort(columns: [\"_time\"])\n  |> difference(nonNegative: false)\n  |> filter(fn: (r) => r._value < 0)\n  |> map(fn: (r) => ({ r with _value: r._value * -1.0 }))\n  |> cumulativeSum()\n  |> timeShift(duration: -3y)\n  |> set(key: \"_field\", value: \"2025\")"
+          "query": "from(bucket: \"consumo\")\n  |> range(start: 2025-01-01T00:00:00Z, stop: 2026-01-01T00:00:00Z)\n  |> filter(fn: (r) => r._measurement == \"pellets\" and r._field == \"value\")\n  |> sort(columns: [\"_time\"])\n  |> difference(nonNegative: true)\n  |> cumulativeSum()\n  |> timeShift(duration: -3y)\n  |> set(key: \"_field\", value: \"2025\")"
         }
       ]
     }
-  ]
+  ],
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      },
+      {
+        "datasource": {
+          "type": "influxdb"
+        },
+        "enable": true,
+        "hide": false,
+        "iconColor": "#f59e0b",
+        "name": "Comment",
+        "query": "from(bucket: \"consumo\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._field == \"note\")\n  |> filter(fn: (r) => r._value != \"\")"
+      }
+    ]
+  }
 }

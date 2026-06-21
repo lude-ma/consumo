@@ -4,170 +4,832 @@
   "schemaVersion": 38,
   "version": 3,
   "refresh": "1h",
-  "time": { "from": "now-1y", "to": "now" },
+  "time": {
+    "from": "now-1y",
+    "to": "now"
+  },
   "panels": [
-
-    { "id": 100, "type": "text", "title": "", "gridPos": { "x": 0, "y": 0, "w": 24, "h": 1 },
-      "options": { "mode": "markdown", "content": "## {{t.grafana_section_electricity}} &nbsp;`{{t.grafana_type_counter}}`" } },
-
-    { "id": 1, "type": "stat", "title": "{{t.grafana_avg_month}}",
-      "gridPos": { "x": 0, "y": 1, "w": 4, "h": 3 },
-      "fieldConfig": { "defaults": { "unit": "kwh", "decimals": 0, "color": { "mode": "fixed", "fixedColor": "#f59e0b" } } },
-      "options": { "reduceOptions": { "calcs": ["mean"] }, "colorMode": "value" },
-      "targets": [{ "datasource": { "type": "influxdb" }, "refId": "A",
-        "query": "from(bucket: \"${INFLUXDB_BUCKET}\")\n  |> range(start: -10y)\n  |> filter(fn: (r) => r._measurement == \"strom\" and r._field == \"value\")\n  |> sort(columns: [\"_time\"])\n  |> difference(nonNegative: true)\n  |> aggregateWindow(every: 1mo, fn: sum, createEmpty: false)" }] },
-
-    { "id": 2, "type": "stat", "title": "{{t.grafana_last_30d}}",
-      "gridPos": { "x": 4, "y": 1, "w": 4, "h": 3 },
-      "fieldConfig": { "defaults": { "unit": "kwh", "decimals": 0, "color": { "mode": "fixed", "fixedColor": "#f59e0b" } } },
-      "options": { "reduceOptions": { "calcs": ["sum"] }, "colorMode": "value" },
-      "targets": [{ "datasource": { "type": "influxdb" }, "refId": "A",
-        "query": "from(bucket: \"${INFLUXDB_BUCKET}\")\n  |> range(start: -31d)\n  |> filter(fn: (r) => r._measurement == \"strom\" and r._field == \"value\")\n  |> sort(columns: [\"_time\"])\n  |> difference(nonNegative: true)" }] },
-
-    { "id": 3, "type": "stat", "title": "{{t.grafana_last_365d}}",
-      "gridPos": { "x": 8, "y": 1, "w": 4, "h": 3 },
-      "fieldConfig": { "defaults": { "unit": "kwh", "decimals": 0, "color": { "mode": "fixed", "fixedColor": "#f59e0b" } } },
-      "options": { "reduceOptions": { "calcs": ["sum"] }, "colorMode": "value" },
-      "targets": [{ "datasource": { "type": "influxdb" }, "refId": "A",
-        "query": "from(bucket: \"${INFLUXDB_BUCKET}\")\n  |> range(start: -366d)\n  |> filter(fn: (r) => r._measurement == \"strom\" and r._field == \"value\")\n  |> sort(columns: [\"_time\"])\n  |> difference(nonNegative: true)" }] },
-
-    { "id": 4, "type": "stat", "title": "{{t.grafana_avg_year}}",
-      "gridPos": { "x": 12, "y": 1, "w": 4, "h": 3 },
-      "fieldConfig": { "defaults": { "unit": "kwh", "decimals": 0, "color": { "mode": "fixed", "fixedColor": "#f59e0b" } } },
-      "options": { "reduceOptions": { "calcs": ["mean"] }, "colorMode": "value" },
-      "targets": [{ "datasource": { "type": "influxdb" }, "refId": "A",
-        "query": "from(bucket: \"${INFLUXDB_BUCKET}\")\n  |> range(start: -10y)\n  |> filter(fn: (r) => r._measurement == \"strom\" and r._field == \"value\")\n  |> sort(columns: [\"_time\"])\n  |> difference(nonNegative: true)\n  |> aggregateWindow(every: 1y, fn: sum, createEmpty: false)" }] },
-
-    { "id": 5, "type": "barchart", "title": "{{t.grafana_section_electricity}} — {{t.grafana_monthly_by_year}}",
-      "gridPos": { "x": 0, "y": 4, "w": 12, "h": 8 },
-      "fieldConfig": { "defaults": { "unit": "kwh", "custom": { "lineWidth": 2, "fillOpacity": 20 } } },
-      "options": { "barWidth": 0.6, "groupWidth": 0.7, "stacking": "none", "legend": { "displayMode": "list", "placement": "bottom" } },
-      "targets": [{ "datasource": { "type": "influxdb" }, "refId": "A",
-        "query": "from(bucket: \"${INFLUXDB_BUCKET}\")\n  |> range(start: -10y)\n  |> filter(fn: (r) => r._measurement == \"strom\" and r._field == \"value\")\n  |> sort(columns: [\"_time\"])\n  |> difference(nonNegative: true)\n  |> aggregateWindow(every: 1mo, fn: sum, createEmpty: false)\n  |> map(fn: (r) => ({ r with year: string(v: date.year(t: r._time)), month: date.month(t: r._time) }))\n  |> group(columns: [\"year\"])" }] },
-
-    { "id": 6, "type": "timeseries", "title": "{{t.grafana_section_electricity}} — {{t.grafana_cumulative_year}}",
-      "gridPos": { "x": 12, "y": 4, "w": 12, "h": 8 },
-      "fieldConfig": { "defaults": { "unit": "kwh", "custom": { "lineWidth": 2, "fillOpacity": 8 } } },
-      "options": { "legend": { "displayMode": "list", "placement": "bottom" }, "tooltip": { "mode": "multi" } },
+    {
+      "id": 100,
+      "type": "text",
+      "title": "",
+      "gridPos": {
+        "x": 0,
+        "y": 0,
+        "w": 24,
+        "h": 1
+      },
+      "options": {
+        "mode": "markdown",
+        "content": "## {{t.grafana_section_electricity}} &nbsp;`{{t.grafana_type_counter}}`"
+      }
+    },
+    {
+      "id": 1,
+      "type": "stat",
+      "title": "{{t.grafana_avg_month}}",
+      "gridPos": {
+        "x": 0,
+        "y": 1,
+        "w": 4,
+        "h": 3
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "kwh",
+          "decimals": 0,
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "#f59e0b"
+          }
+        }
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "mean"
+          ]
+        },
+        "colorMode": "value"
+      },
       "targets": [
-        { "datasource": { "type": "influxdb" }, "refId": "Y1", "query": "from(bucket: \"${INFLUXDB_BUCKET}\")\n  |> range(start: 2022-01-01T00:00:00Z, stop: 2023-01-01T00:00:00Z)\n  |> filter(fn: (r) => r._measurement == \"strom\" and r._field == \"value\")\n  |> sort(columns: [\"_time\"])\n  |> difference(nonNegative: true)\n  |> cumulativeSum()\n  |> set(key: \"_field\", value: \"2022\")" },
-        { "datasource": { "type": "influxdb" }, "refId": "Y2", "query": "from(bucket: \"${INFLUXDB_BUCKET}\")\n  |> range(start: 2023-01-01T00:00:00Z, stop: 2024-01-01T00:00:00Z)\n  |> filter(fn: (r) => r._measurement == \"strom\" and r._field == \"value\")\n  |> sort(columns: [\"_time\"])\n  |> difference(nonNegative: true)\n  |> cumulativeSum()\n  |> timeShift(duration: -1y)\n  |> set(key: \"_field\", value: \"2023\")" },
-        { "datasource": { "type": "influxdb" }, "refId": "Y3", "query": "from(bucket: \"${INFLUXDB_BUCKET}\")\n  |> range(start: 2024-01-01T00:00:00Z, stop: 2025-01-01T00:00:00Z)\n  |> filter(fn: (r) => r._measurement == \"strom\" and r._field == \"value\")\n  |> sort(columns: [\"_time\"])\n  |> difference(nonNegative: true)\n  |> cumulativeSum()\n  |> timeShift(duration: -2y)\n  |> set(key: \"_field\", value: \"2024\")" },
-        { "datasource": { "type": "influxdb" }, "refId": "Y4", "query": "from(bucket: \"${INFLUXDB_BUCKET}\")\n  |> range(start: 2025-01-01T00:00:00Z, stop: 2026-01-01T00:00:00Z)\n  |> filter(fn: (r) => r._measurement == \"strom\" and r._field == \"value\")\n  |> sort(columns: [\"_time\"])\n  |> difference(nonNegative: true)\n  |> cumulativeSum()\n  |> timeShift(duration: -3y)\n  |> set(key: \"_field\", value: \"2025\")" }
-      ] },
-
-    { "id": 200, "type": "text", "title": "", "gridPos": { "x": 0, "y": 12, "w": 24, "h": 1 },
-      "options": { "mode": "markdown", "content": "## {{t.grafana_section_water}} &nbsp;`{{t.grafana_type_counter}}`" } },
-
-    { "id": 11, "type": "stat", "title": "Ø / Monat",
-      "gridPos": { "x": 0, "y": 13, "w": 4, "h": 3 },
-      "fieldConfig": { "defaults": { "unit": "m3", "decimals": 1, "color": { "mode": "fixed", "fixedColor": "#3b82f6" } } },
-      "options": { "reduceOptions": { "calcs": ["mean"] }, "colorMode": "value" },
-      "targets": [{ "datasource": { "type": "influxdb" }, "refId": "A",
-        "query": "from(bucket: \"${INFLUXDB_BUCKET}\")\n  |> range(start: -10y)\n  |> filter(fn: (r) => r._measurement == \"wasser\" and r._field == \"value\")\n  |> sort(columns: [\"_time\"])\n  |> difference(nonNegative: true)\n  |> aggregateWindow(every: 1mo, fn: sum, createEmpty: false)" }] },
-
-    { "id": 12, "type": "stat", "title": "{{t.grafana_last_30d}}",
-      "gridPos": { "x": 4, "y": 13, "w": 4, "h": 3 },
-      "fieldConfig": { "defaults": { "unit": "m3", "decimals": 2, "color": { "mode": "fixed", "fixedColor": "#3b82f6" } } },
-      "options": { "reduceOptions": { "calcs": ["sum"] }, "colorMode": "value" },
-      "targets": [{ "datasource": { "type": "influxdb" }, "refId": "A",
-        "query": "from(bucket: \"${INFLUXDB_BUCKET}\")\n  |> range(start: -31d)\n  |> filter(fn: (r) => r._measurement == \"wasser\" and r._field == \"value\")\n  |> sort(columns: [\"_time\"])\n  |> difference(nonNegative: true)" }] },
-
-    { "id": 13, "type": "stat", "title": "{{t.grafana_last_365d}}",
-      "gridPos": { "x": 8, "y": 13, "w": 4, "h": 3 },
-      "fieldConfig": { "defaults": { "unit": "m3", "decimals": 1, "color": { "mode": "fixed", "fixedColor": "#3b82f6" } } },
-      "options": { "reduceOptions": { "calcs": ["sum"] }, "colorMode": "value" },
-      "targets": [{ "datasource": { "type": "influxdb" }, "refId": "A",
-        "query": "from(bucket: \"${INFLUXDB_BUCKET}\")\n  |> range(start: -366d)\n  |> filter(fn: (r) => r._measurement == \"wasser\" and r._field == \"value\")\n  |> sort(columns: [\"_time\"])\n  |> difference(nonNegative: true)" }] },
-
-    { "id": 14, "type": "stat", "title": "{{t.grafana_avg_year}}",
-      "gridPos": { "x": 12, "y": 13, "w": 4, "h": 3 },
-      "fieldConfig": { "defaults": { "unit": "m3", "decimals": 1, "color": { "mode": "fixed", "fixedColor": "#3b82f6" } } },
-      "options": { "reduceOptions": { "calcs": ["mean"] }, "colorMode": "value" },
-      "targets": [{ "datasource": { "type": "influxdb" }, "refId": "A",
-        "query": "from(bucket: \"${INFLUXDB_BUCKET}\")\n  |> range(start: -10y)\n  |> filter(fn: (r) => r._measurement == \"wasser\" and r._field == \"value\")\n  |> sort(columns: [\"_time\"])\n  |> difference(nonNegative: true)\n  |> aggregateWindow(every: 1y, fn: sum, createEmpty: false)" }] },
-
-    { "id": 15, "type": "barchart", "title": "{{t.grafana_section_water}} — {{t.grafana_monthly_by_year}}",
-      "gridPos": { "x": 0, "y": 16, "w": 12, "h": 8 },
-      "fieldConfig": { "defaults": { "unit": "m3", "custom": { "lineWidth": 2, "fillOpacity": 20 } } },
-      "options": { "barWidth": 0.6, "groupWidth": 0.7, "stacking": "none", "legend": { "displayMode": "list", "placement": "bottom" } },
-      "targets": [{ "datasource": { "type": "influxdb" }, "refId": "A",
-        "query": "from(bucket: \"${INFLUXDB_BUCKET}\")\n  |> range(start: -10y)\n  |> filter(fn: (r) => r._measurement == \"wasser\" and r._field == \"value\")\n  |> sort(columns: [\"_time\"])\n  |> difference(nonNegative: true)\n  |> aggregateWindow(every: 1mo, fn: sum, createEmpty: false)\n  |> map(fn: (r) => ({ r with year: string(v: date.year(t: r._time)), month: date.month(t: r._time) }))\n  |> group(columns: [\"year\"])" }] },
-
-    { "id": 16, "type": "timeseries", "title": "{{t.grafana_section_water}} — {{t.grafana_cumulative_year}}",
-      "gridPos": { "x": 12, "y": 16, "w": 12, "h": 8 },
-      "fieldConfig": { "defaults": { "unit": "m3", "custom": { "lineWidth": 2, "fillOpacity": 8 } } },
-      "options": { "legend": { "displayMode": "list", "placement": "bottom" }, "tooltip": { "mode": "multi" } },
+        {
+          "datasource": {
+            "type": "influxdb"
+          },
+          "refId": "A",
+          "query": "from(bucket: \"${INFLUXDB_BUCKET}\")\n  |> range(start: -10y)\n  |> filter(fn: (r) => r._measurement == \"strom\" and r._field == \"value\")\n  |> sort(columns: [\"_time\"])\n  |> difference(nonNegative: true)\n  |> aggregateWindow(every: 1mo, fn: sum, createEmpty: false)"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "type": "stat",
+      "title": "{{t.grafana_last_30d}}",
+      "gridPos": {
+        "x": 4,
+        "y": 1,
+        "w": 4,
+        "h": 3
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "kwh",
+          "decimals": 0,
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "#f59e0b"
+          }
+        }
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "sum"
+          ]
+        },
+        "colorMode": "value"
+      },
       "targets": [
-        { "datasource": { "type": "influxdb" }, "refId": "Y1", "query": "from(bucket: \"${INFLUXDB_BUCKET}\")\n  |> range(start: 2022-01-01T00:00:00Z, stop: 2023-01-01T00:00:00Z)\n  |> filter(fn: (r) => r._measurement == \"wasser\" and r._field == \"value\")\n  |> sort(columns: [\"_time\"])\n  |> difference(nonNegative: true)\n  |> cumulativeSum()\n  |> set(key: \"_field\", value: \"2022\")" },
-        { "datasource": { "type": "influxdb" }, "refId": "Y2", "query": "from(bucket: \"${INFLUXDB_BUCKET}\")\n  |> range(start: 2023-01-01T00:00:00Z, stop: 2024-01-01T00:00:00Z)\n  |> filter(fn: (r) => r._measurement == \"wasser\" and r._field == \"value\")\n  |> sort(columns: [\"_time\"])\n  |> difference(nonNegative: true)\n  |> cumulativeSum()\n  |> timeShift(duration: -1y)\n  |> set(key: \"_field\", value: \"2023\")" },
-        { "datasource": { "type": "influxdb" }, "refId": "Y3", "query": "from(bucket: \"${INFLUXDB_BUCKET}\")\n  |> range(start: 2024-01-01T00:00:00Z, stop: 2025-01-01T00:00:00Z)\n  |> filter(fn: (r) => r._measurement == \"wasser\" and r._field == \"value\")\n  |> sort(columns: [\"_time\"])\n  |> difference(nonNegative: true)\n  |> cumulativeSum()\n  |> timeShift(duration: -2y)\n  |> set(key: \"_field\", value: \"2024\")" },
-        { "datasource": { "type": "influxdb" }, "refId": "Y4", "query": "from(bucket: \"${INFLUXDB_BUCKET}\")\n  |> range(start: 2025-01-01T00:00:00Z, stop: 2026-01-01T00:00:00Z)\n  |> filter(fn: (r) => r._measurement == \"wasser\" and r._field == \"value\")\n  |> sort(columns: [\"_time\"])\n  |> difference(nonNegative: true)\n  |> cumulativeSum()\n  |> timeShift(duration: -3y)\n  |> set(key: \"_field\", value: \"2025\")" }
-      ] },
-
-    { "id": 300, "type": "text", "title": "", "gridPos": { "x": 0, "y": 24, "w": 24, "h": 1 },
-      "options": { "mode": "markdown", "content": "## {{t.grafana_section_pellets}} &nbsp;`{{t.grafana_type_storage}}` — {{t.grafana_level_history}}, {{t.grafana_total_refilled}} & {{t.grafana_total_consumed}}" } },
-
-    { "id": 21, "type": "stat", "title": "{{t.grafana_current_level}}",
-      "gridPos": { "x": 0, "y": 25, "w": 4, "h": 3 },
-      "fieldConfig": { "defaults": { "unit": "short", "decimals": 0, "color": { "mode": "fixed", "fixedColor": "#3b82f6" } } },
-      "options": { "reduceOptions": { "calcs": ["last"] }, "colorMode": "value" },
-      "targets": [{ "datasource": { "type": "influxdb" }, "refId": "A",
-        "query": "from(bucket: \"${INFLUXDB_BUCKET}\")\n  |> range(start: -10y)\n  |> filter(fn: (r) => r._measurement == \"pellets\" and r._field == \"value\")\n  |> last()" }] },
-
-    { "id": 22, "type": "stat", "title": "{{t.grafana_total_refilled}}",
-      "gridPos": { "x": 4, "y": 25, "w": 4, "h": 3 },
-      "fieldConfig": { "defaults": { "unit": "short", "decimals": 0, "color": { "mode": "fixed", "fixedColor": "#22c55e" } } },
-      "options": { "reduceOptions": { "calcs": ["sum"] }, "colorMode": "value" },
-      "targets": [{ "datasource": { "type": "influxdb" }, "refId": "A",
-        "query": "from(bucket: \"${INFLUXDB_BUCKET}\")\n  |> range(start: -10y)\n  |> filter(fn: (r) => r._measurement == \"pellets\" and r._field == \"value\")\n  |> sort(columns: [\"_time\"])\n  |> difference(nonNegative: false)\n  |> filter(fn: (r) => r._value > 0)" }] },
-
-    { "id": 23, "type": "stat", "title": "{{t.grafana_total_consumed}}",
-      "gridPos": { "x": 8, "y": 25, "w": 4, "h": 3 },
-      "fieldConfig": { "defaults": { "unit": "short", "decimals": 0, "color": { "mode": "fixed", "fixedColor": "#ef4444" } } },
-      "options": { "reduceOptions": { "calcs": ["sum"] }, "colorMode": "value" },
-      "targets": [{ "datasource": { "type": "influxdb" }, "refId": "A",
-        "query": "from(bucket: \"${INFLUXDB_BUCKET}\")\n  |> range(start: -10y)\n  |> filter(fn: (r) => r._measurement == \"pellets\" and r._field == \"value\")\n  |> sort(columns: [\"_time\"])\n  |> difference(nonNegative: false)\n  |> filter(fn: (r) => r._value < 0)\n  |> map(fn: (r) => ({ r with _value: r._value * -1.0 }))" }] },
-
-    { "id": 24, "type": "stat", "title": "{{t.grafana_avg_consumed_month}}",
-      "gridPos": { "x": 12, "y": 25, "w": 4, "h": 3 },
-      "fieldConfig": { "defaults": { "unit": "short", "decimals": 0, "color": { "mode": "fixed", "fixedColor": "#a16207" } } },
-      "options": { "reduceOptions": { "calcs": ["mean"] }, "colorMode": "value" },
-      "targets": [{ "datasource": { "type": "influxdb" }, "refId": "A",
-        "query": "from(bucket: \"${INFLUXDB_BUCKET}\")\n  |> range(start: -10y)\n  |> filter(fn: (r) => r._measurement == \"pellets\" and r._field == \"value\")\n  |> sort(columns: [\"_time\"])\n  |> difference(nonNegative: false)\n  |> filter(fn: (r) => r._value < 0)\n  |> map(fn: (r) => ({ r with _value: r._value * -1.0 }))\n  |> aggregateWindow(every: 1mo, fn: sum, createEmpty: false)" }] },
-
-    { "id": 25, "type": "timeseries", "title": "{{t.grafana_section_pellets}} — {{t.grafana_level_history}}",
-      "gridPos": { "x": 0, "y": 28, "w": 12, "h": 8 },
-      "fieldConfig": { "defaults": { "unit": "short", "custom": { "lineWidth": 2, "fillOpacity": 20, "lineInterpolation": "stepAfter" },
-        "color": { "mode": "fixed", "fixedColor": "#a16207" } } },
-      "options": { "legend": { "displayMode": "list", "placement": "bottom" }, "tooltip": { "mode": "single" } },
-      "targets": [{ "datasource": { "type": "influxdb" }, "refId": "A",
-        "query": "from(bucket: \"${INFLUXDB_BUCKET}\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"pellets\" and r._field == \"value\")\n  |> sort(columns: [\"_time\"])" }] },
-
-    { "id": 26, "type": "barchart", "title": "{{t.grafana_section_pellets}} — {{t.grafana_refills_consumption}}",
-      "gridPos": { "x": 12, "y": 28, "w": 12, "h": 8 },
-      "fieldConfig": { "defaults": { "unit": "short" },
-        "overrides": [
-          { "matcher": { "id": "byName", "options": "{{t.grafana_total_refilled}}" }, "properties": [{ "id": "color", "value": { "mode": "fixed", "fixedColor": "#22c55e" } }] },
-          { "matcher": { "id": "byName", "options": "{{t.grafana_total_consumed}}"  }, "properties": [{ "id": "color", "value": { "mode": "fixed", "fixedColor": "#ef4444" } }] }
-        ] },
-      "options": { "barWidth": 0.6, "groupWidth": 0.7, "stacking": "none", "legend": { "displayMode": "list", "placement": "bottom" } },
+        {
+          "datasource": {
+            "type": "influxdb"
+          },
+          "refId": "A",
+          "query": "from(bucket: \"${INFLUXDB_BUCKET}\")\n  |> range(start: -31d)\n  |> filter(fn: (r) => r._measurement == \"strom\" and r._field == \"value\")\n  |> sort(columns: [\"_time\"])\n  |> difference(nonNegative: true)"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "type": "stat",
+      "title": "{{t.grafana_last_365d}}",
+      "gridPos": {
+        "x": 8,
+        "y": 1,
+        "w": 4,
+        "h": 3
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "kwh",
+          "decimals": 0,
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "#f59e0b"
+          }
+        }
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "sum"
+          ]
+        },
+        "colorMode": "value"
+      },
       "targets": [
-        { "datasource": { "type": "influxdb" }, "refId": "Refill",
-          "query": "from(bucket: \"${INFLUXDB_BUCKET}\")\n  |> range(start: -10y)\n  |> filter(fn: (r) => r._measurement == \"pellets\" and r._field == \"value\")\n  |> sort(columns: [\"_time\"])\n  |> difference(nonNegative: false)\n  |> filter(fn: (r) => r._value > 0)\n  |> aggregateWindow(every: 1mo, fn: sum, createEmpty: false)\n  |> set(key: \"_field\", value: \"Befüllung\")" },
-        { "datasource": { "type": "influxdb" }, "refId": "Consume",
-          "query": "from(bucket: \"${INFLUXDB_BUCKET}\")\n  |> range(start: -10y)\n  |> filter(fn: (r) => r._measurement == \"pellets\" and r._field == \"value\")\n  |> sort(columns: [\"_time\"])\n  |> difference(nonNegative: false)\n  |> filter(fn: (r) => r._value < 0)\n  |> map(fn: (r) => ({ r with _value: r._value * -1.0 }))\n  |> aggregateWindow(every: 1mo, fn: sum, createEmpty: false)\n  |> set(key: \"_field\", value: \"Verbrauch\")" }
-      ] },
-
-    { "id": 27, "type": "timeseries", "title": "{{t.grafana_section_pellets}} — {{t.grafana_yearly_overlaid}}",
-      "gridPos": { "x": 0, "y": 36, "w": 24, "h": 8 },
-      "fieldConfig": { "defaults": { "unit": "short", "custom": { "lineWidth": 2, "fillOpacity": 8 } } },
-      "options": { "legend": { "displayMode": "list", "placement": "bottom" }, "tooltip": { "mode": "multi" } },
+        {
+          "datasource": {
+            "type": "influxdb"
+          },
+          "refId": "A",
+          "query": "from(bucket: \"${INFLUXDB_BUCKET}\")\n  |> range(start: -366d)\n  |> filter(fn: (r) => r._measurement == \"strom\" and r._field == \"value\")\n  |> sort(columns: [\"_time\"])\n  |> difference(nonNegative: true)"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "type": "stat",
+      "title": "{{t.grafana_avg_year}}",
+      "gridPos": {
+        "x": 12,
+        "y": 1,
+        "w": 4,
+        "h": 3
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "kwh",
+          "decimals": 0,
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "#f59e0b"
+          }
+        }
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "mean"
+          ]
+        },
+        "colorMode": "value"
+      },
       "targets": [
-        { "datasource": { "type": "influxdb" }, "refId": "Y1", "query": "from(bucket: \"${INFLUXDB_BUCKET}\")\n  |> range(start: 2022-01-01T00:00:00Z, stop: 2023-01-01T00:00:00Z)\n  |> filter(fn: (r) => r._measurement == \"pellets\" and r._field == \"value\")\n  |> sort(columns: [\"_time\"])\n  |> difference(nonNegative: false)\n  |> filter(fn: (r) => r._value < 0)\n  |> map(fn: (r) => ({ r with _value: r._value * -1.0 }))\n  |> cumulativeSum()\n  |> set(key: \"_field\", value: \"2022\")" },
-        { "datasource": { "type": "influxdb" }, "refId": "Y2", "query": "from(bucket: \"${INFLUXDB_BUCKET}\")\n  |> range(start: 2023-01-01T00:00:00Z, stop: 2024-01-01T00:00:00Z)\n  |> filter(fn: (r) => r._measurement == \"pellets\" and r._field == \"value\")\n  |> sort(columns: [\"_time\"])\n  |> difference(nonNegative: false)\n  |> filter(fn: (r) => r._value < 0)\n  |> map(fn: (r) => ({ r with _value: r._value * -1.0 }))\n  |> cumulativeSum()\n  |> timeShift(duration: -1y)\n  |> set(key: \"_field\", value: \"2023\")" },
-        { "datasource": { "type": "influxdb" }, "refId": "Y3", "query": "from(bucket: \"${INFLUXDB_BUCKET}\")\n  |> range(start: 2024-01-01T00:00:00Z, stop: 2025-01-01T00:00:00Z)\n  |> filter(fn: (r) => r._measurement == \"pellets\" and r._field == \"value\")\n  |> sort(columns: [\"_time\"])\n  |> difference(nonNegative: false)\n  |> filter(fn: (r) => r._value < 0)\n  |> map(fn: (r) => ({ r with _value: r._value * -1.0 }))\n  |> cumulativeSum()\n  |> timeShift(duration: -2y)\n  |> set(key: \"_field\", value: \"2024\")" },
-        { "datasource": { "type": "influxdb" }, "refId": "Y4", "query": "from(bucket: \"${INFLUXDB_BUCKET}\")\n  |> range(start: 2025-01-01T00:00:00Z, stop: 2026-01-01T00:00:00Z)\n  |> filter(fn: (r) => r._measurement == \"pellets\" and r._field == \"value\")\n  |> sort(columns: [\"_time\"])\n  |> difference(nonNegative: false)\n  |> filter(fn: (r) => r._value < 0)\n  |> map(fn: (r) => ({ r with _value: r._value * -1.0 }))\n  |> cumulativeSum()\n  |> timeShift(duration: -3y)\n  |> set(key: \"_field\", value: \"2025\")" }
-      ] }
-  ]
+        {
+          "datasource": {
+            "type": "influxdb"
+          },
+          "refId": "A",
+          "query": "from(bucket: \"${INFLUXDB_BUCKET}\")\n  |> range(start: -10y)\n  |> filter(fn: (r) => r._measurement == \"strom\" and r._field == \"value\")\n  |> sort(columns: [\"_time\"])\n  |> difference(nonNegative: true)\n  |> aggregateWindow(every: 1y, fn: sum, createEmpty: false)"
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "type": "barchart",
+      "title": "{{t.grafana_section_electricity}} — {{t.grafana_monthly_by_year}}",
+      "gridPos": {
+        "x": 0,
+        "y": 4,
+        "w": 12,
+        "h": 8
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "kwh",
+          "custom": {
+            "lineWidth": 2,
+            "fillOpacity": 20
+          }
+        }
+      },
+      "options": {
+        "barWidth": 0.6,
+        "groupWidth": 0.7,
+        "stacking": "none",
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb"
+          },
+          "refId": "A",
+          "query": "from(bucket: \"${INFLUXDB_BUCKET}\")\n  |> range(start: -10y)\n  |> filter(fn: (r) => r._measurement == \"strom\" and r._field == \"value\")\n  |> sort(columns: [\"_time\"])\n  |> difference(nonNegative: true)\n  |> aggregateWindow(every: 1mo, fn: sum, createEmpty: false)\n  |> map(fn: (r) => ({ r with year: string(v: date.year(t: r._time)), month: date.month(t: r._time) }))\n  |> group(columns: [\"year\"])"
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "type": "timeseries",
+      "title": "{{t.grafana_section_electricity}} — {{t.grafana_cumulative_year}}",
+      "gridPos": {
+        "x": 12,
+        "y": 4,
+        "w": 12,
+        "h": 8
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "kwh",
+          "custom": {
+            "lineWidth": 2,
+            "fillOpacity": 8
+          }
+        }
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb"
+          },
+          "refId": "Y1",
+          "query": "from(bucket: \"${INFLUXDB_BUCKET}\")\n  |> range(start: 2022-01-01T00:00:00Z, stop: 2023-01-01T00:00:00Z)\n  |> filter(fn: (r) => r._measurement == \"strom\" and r._field == \"value\")\n  |> sort(columns: [\"_time\"])\n  |> difference(nonNegative: true)\n  |> cumulativeSum()\n  |> set(key: \"_field\", value: \"2022\")"
+        },
+        {
+          "datasource": {
+            "type": "influxdb"
+          },
+          "refId": "Y2",
+          "query": "from(bucket: \"${INFLUXDB_BUCKET}\")\n  |> range(start: 2023-01-01T00:00:00Z, stop: 2024-01-01T00:00:00Z)\n  |> filter(fn: (r) => r._measurement == \"strom\" and r._field == \"value\")\n  |> sort(columns: [\"_time\"])\n  |> difference(nonNegative: true)\n  |> cumulativeSum()\n  |> timeShift(duration: -1y)\n  |> set(key: \"_field\", value: \"2023\")"
+        },
+        {
+          "datasource": {
+            "type": "influxdb"
+          },
+          "refId": "Y3",
+          "query": "from(bucket: \"${INFLUXDB_BUCKET}\")\n  |> range(start: 2024-01-01T00:00:00Z, stop: 2025-01-01T00:00:00Z)\n  |> filter(fn: (r) => r._measurement == \"strom\" and r._field == \"value\")\n  |> sort(columns: [\"_time\"])\n  |> difference(nonNegative: true)\n  |> cumulativeSum()\n  |> timeShift(duration: -2y)\n  |> set(key: \"_field\", value: \"2024\")"
+        },
+        {
+          "datasource": {
+            "type": "influxdb"
+          },
+          "refId": "Y4",
+          "query": "from(bucket: \"${INFLUXDB_BUCKET}\")\n  |> range(start: 2025-01-01T00:00:00Z, stop: 2026-01-01T00:00:00Z)\n  |> filter(fn: (r) => r._measurement == \"strom\" and r._field == \"value\")\n  |> sort(columns: [\"_time\"])\n  |> difference(nonNegative: true)\n  |> cumulativeSum()\n  |> timeShift(duration: -3y)\n  |> set(key: \"_field\", value: \"2025\")"
+        }
+      ]
+    },
+    {
+      "id": 200,
+      "type": "text",
+      "title": "",
+      "gridPos": {
+        "x": 0,
+        "y": 12,
+        "w": 24,
+        "h": 1
+      },
+      "options": {
+        "mode": "markdown",
+        "content": "## {{t.grafana_section_water}} &nbsp;`{{t.grafana_type_counter}}`"
+      }
+    },
+    {
+      "id": 11,
+      "type": "stat",
+      "title": "Ø / Monat",
+      "gridPos": {
+        "x": 0,
+        "y": 13,
+        "w": 4,
+        "h": 3
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "m3",
+          "decimals": 1,
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "#3b82f6"
+          }
+        }
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "mean"
+          ]
+        },
+        "colorMode": "value"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb"
+          },
+          "refId": "A",
+          "query": "from(bucket: \"${INFLUXDB_BUCKET}\")\n  |> range(start: -10y)\n  |> filter(fn: (r) => r._measurement == \"wasser\" and r._field == \"value\")\n  |> sort(columns: [\"_time\"])\n  |> difference(nonNegative: true)\n  |> aggregateWindow(every: 1mo, fn: sum, createEmpty: false)"
+        }
+      ]
+    },
+    {
+      "id": 12,
+      "type": "stat",
+      "title": "{{t.grafana_last_30d}}",
+      "gridPos": {
+        "x": 4,
+        "y": 13,
+        "w": 4,
+        "h": 3
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "m3",
+          "decimals": 2,
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "#3b82f6"
+          }
+        }
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "sum"
+          ]
+        },
+        "colorMode": "value"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb"
+          },
+          "refId": "A",
+          "query": "from(bucket: \"${INFLUXDB_BUCKET}\")\n  |> range(start: -31d)\n  |> filter(fn: (r) => r._measurement == \"wasser\" and r._field == \"value\")\n  |> sort(columns: [\"_time\"])\n  |> difference(nonNegative: true)"
+        }
+      ]
+    },
+    {
+      "id": 13,
+      "type": "stat",
+      "title": "{{t.grafana_last_365d}}",
+      "gridPos": {
+        "x": 8,
+        "y": 13,
+        "w": 4,
+        "h": 3
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "m3",
+          "decimals": 1,
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "#3b82f6"
+          }
+        }
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "sum"
+          ]
+        },
+        "colorMode": "value"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb"
+          },
+          "refId": "A",
+          "query": "from(bucket: \"${INFLUXDB_BUCKET}\")\n  |> range(start: -366d)\n  |> filter(fn: (r) => r._measurement == \"wasser\" and r._field == \"value\")\n  |> sort(columns: [\"_time\"])\n  |> difference(nonNegative: true)"
+        }
+      ]
+    },
+    {
+      "id": 14,
+      "type": "stat",
+      "title": "{{t.grafana_avg_year}}",
+      "gridPos": {
+        "x": 12,
+        "y": 13,
+        "w": 4,
+        "h": 3
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "m3",
+          "decimals": 1,
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "#3b82f6"
+          }
+        }
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "mean"
+          ]
+        },
+        "colorMode": "value"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb"
+          },
+          "refId": "A",
+          "query": "from(bucket: \"${INFLUXDB_BUCKET}\")\n  |> range(start: -10y)\n  |> filter(fn: (r) => r._measurement == \"wasser\" and r._field == \"value\")\n  |> sort(columns: [\"_time\"])\n  |> difference(nonNegative: true)\n  |> aggregateWindow(every: 1y, fn: sum, createEmpty: false)"
+        }
+      ]
+    },
+    {
+      "id": 15,
+      "type": "barchart",
+      "title": "{{t.grafana_section_water}} — {{t.grafana_monthly_by_year}}",
+      "gridPos": {
+        "x": 0,
+        "y": 16,
+        "w": 12,
+        "h": 8
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "m3",
+          "custom": {
+            "lineWidth": 2,
+            "fillOpacity": 20
+          }
+        }
+      },
+      "options": {
+        "barWidth": 0.6,
+        "groupWidth": 0.7,
+        "stacking": "none",
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb"
+          },
+          "refId": "A",
+          "query": "from(bucket: \"${INFLUXDB_BUCKET}\")\n  |> range(start: -10y)\n  |> filter(fn: (r) => r._measurement == \"wasser\" and r._field == \"value\")\n  |> sort(columns: [\"_time\"])\n  |> difference(nonNegative: true)\n  |> aggregateWindow(every: 1mo, fn: sum, createEmpty: false)\n  |> map(fn: (r) => ({ r with year: string(v: date.year(t: r._time)), month: date.month(t: r._time) }))\n  |> group(columns: [\"year\"])"
+        }
+      ]
+    },
+    {
+      "id": 16,
+      "type": "timeseries",
+      "title": "{{t.grafana_section_water}} — {{t.grafana_cumulative_year}}",
+      "gridPos": {
+        "x": 12,
+        "y": 16,
+        "w": 12,
+        "h": 8
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "m3",
+          "custom": {
+            "lineWidth": 2,
+            "fillOpacity": 8
+          }
+        }
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb"
+          },
+          "refId": "Y1",
+          "query": "from(bucket: \"${INFLUXDB_BUCKET}\")\n  |> range(start: 2022-01-01T00:00:00Z, stop: 2023-01-01T00:00:00Z)\n  |> filter(fn: (r) => r._measurement == \"wasser\" and r._field == \"value\")\n  |> sort(columns: [\"_time\"])\n  |> difference(nonNegative: true)\n  |> cumulativeSum()\n  |> set(key: \"_field\", value: \"2022\")"
+        },
+        {
+          "datasource": {
+            "type": "influxdb"
+          },
+          "refId": "Y2",
+          "query": "from(bucket: \"${INFLUXDB_BUCKET}\")\n  |> range(start: 2023-01-01T00:00:00Z, stop: 2024-01-01T00:00:00Z)\n  |> filter(fn: (r) => r._measurement == \"wasser\" and r._field == \"value\")\n  |> sort(columns: [\"_time\"])\n  |> difference(nonNegative: true)\n  |> cumulativeSum()\n  |> timeShift(duration: -1y)\n  |> set(key: \"_field\", value: \"2023\")"
+        },
+        {
+          "datasource": {
+            "type": "influxdb"
+          },
+          "refId": "Y3",
+          "query": "from(bucket: \"${INFLUXDB_BUCKET}\")\n  |> range(start: 2024-01-01T00:00:00Z, stop: 2025-01-01T00:00:00Z)\n  |> filter(fn: (r) => r._measurement == \"wasser\" and r._field == \"value\")\n  |> sort(columns: [\"_time\"])\n  |> difference(nonNegative: true)\n  |> cumulativeSum()\n  |> timeShift(duration: -2y)\n  |> set(key: \"_field\", value: \"2024\")"
+        },
+        {
+          "datasource": {
+            "type": "influxdb"
+          },
+          "refId": "Y4",
+          "query": "from(bucket: \"${INFLUXDB_BUCKET}\")\n  |> range(start: 2025-01-01T00:00:00Z, stop: 2026-01-01T00:00:00Z)\n  |> filter(fn: (r) => r._measurement == \"wasser\" and r._field == \"value\")\n  |> sort(columns: [\"_time\"])\n  |> difference(nonNegative: true)\n  |> cumulativeSum()\n  |> timeShift(duration: -3y)\n  |> set(key: \"_field\", value: \"2025\")"
+        }
+      ]
+    },
+    {
+      "id": 300,
+      "type": "text",
+      "title": "",
+      "gridPos": {
+        "x": 0,
+        "y": 24,
+        "w": 24,
+        "h": 1
+      },
+      "options": {
+        "mode": "markdown",
+        "content": "## {{t.grafana_section_pellets}} &nbsp;`{{t.grafana_type_storage}}` — {{t.grafana_level_history}}, {{t.grafana_total_refilled}} & {{t.grafana_total_consumed}}"
+      }
+    },
+    {
+      "id": 21,
+      "type": "stat",
+      "title": "{{t.stats_last_30d}}",
+      "gridPos": {
+        "x": 0,
+        "y": 25,
+        "w": 4,
+        "h": 3
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "decimals": 0,
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "#a16207"
+          }
+        }
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "sum"
+          ]
+        },
+        "colorMode": "value"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb"
+          },
+          "refId": "A",
+          "query": "from(bucket: \"${INFLUXDB_BUCKET}\")\n  |> range(start: -31d)\n  |> filter(fn: (r) => r._measurement == \"pellets\" and r._field == \"value\")\n  |> sort(columns: [\"_time\"])\n  |> difference(nonNegative: true)"
+        }
+      ]
+    },
+    {
+      "id": 22,
+      "type": "stat",
+      "title": "{{t.stats_last_365d}}",
+      "gridPos": {
+        "x": 4,
+        "y": 25,
+        "w": 4,
+        "h": 3
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "decimals": 0,
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "#a16207"
+          }
+        }
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "sum"
+          ]
+        },
+        "colorMode": "value"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb"
+          },
+          "refId": "A",
+          "query": "from(bucket: \"${INFLUXDB_BUCKET}\")\n  |> range(start: -366d)\n  |> filter(fn: (r) => r._measurement == \"pellets\" and r._field == \"value\")\n  |> sort(columns: [\"_time\"])\n  |> difference(nonNegative: true)"
+        }
+      ]
+    },
+    {
+      "id": 23,
+      "type": "stat",
+      "title": "{{t.stats_avg_month}}",
+      "gridPos": {
+        "x": 8,
+        "y": 25,
+        "w": 4,
+        "h": 3
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "decimals": 0,
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "#a16207"
+          }
+        }
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "mean"
+          ]
+        },
+        "colorMode": "value"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb"
+          },
+          "refId": "A",
+          "query": "from(bucket: \"${INFLUXDB_BUCKET}\")\n  |> range(start: -10y)\n  |> filter(fn: (r) => r._measurement == \"pellets\" and r._field == \"value\")\n  |> sort(columns: [\"_time\"])\n  |> difference(nonNegative: true)\n  |> aggregateWindow(every: 1mo, fn: sum, createEmpty: false)\n  |> mean()"
+        }
+      ]
+    },
+    {
+      "id": 24,
+      "type": "stat",
+      "title": "{{t.stats_avg_year}}",
+      "gridPos": {
+        "x": 12,
+        "y": 25,
+        "w": 4,
+        "h": 3
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "decimals": 0,
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "#a16207"
+          }
+        }
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "mean"
+          ]
+        },
+        "colorMode": "value"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb"
+          },
+          "refId": "A",
+          "query": "from(bucket: \"${INFLUXDB_BUCKET}\")\n  |> range(start: -10y)\n  |> filter(fn: (r) => r._measurement == \"pellets\" and r._field == \"value\")\n  |> sort(columns: [\"_time\"])\n  |> difference(nonNegative: true)\n  |> aggregateWindow(every: 1y, fn: sum, createEmpty: false)\n  |> mean()"
+        }
+      ]
+    },
+    {
+      "id": 25,
+      "type": "barchart",
+      "title": "{{t.grafana_section_pellets}} — {{t.grafana_monthly_by_year}}",
+      "gridPos": {
+        "x": 0,
+        "y": 28,
+        "w": 12,
+        "h": 8
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "custom": {
+            "lineWidth": 2,
+            "fillOpacity": 20
+          },
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "#a16207"
+          }
+        }
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb"
+          },
+          "refId": "A",
+          "query": "from(bucket: \"${INFLUXDB_BUCKET}\")\n  |> range(start: -10y)\n  |> filter(fn: (r) => r._measurement == \"pellets\" and r._field == \"value\")\n  |> sort(columns: [\"_time\"])\n  |> difference(nonNegative: true)\n  |> aggregateWindow(every: 1mo, fn: sum, createEmpty: false)\n  |> map(fn: (r) => ({ r with year: string(v: date.year(t: r._time)), month: date.month(t: r._time) }))\n  |> group(columns: [\"year\"])"
+        }
+      ]
+    },
+    {
+      "id": 27,
+      "type": "timeseries",
+      "title": "{{t.grafana_section_pellets}} — {{t.grafana_yearly_overlaid}}",
+      "gridPos": {
+        "x": 0,
+        "y": 36,
+        "w": 24,
+        "h": 8
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "custom": {
+            "lineWidth": 2,
+            "fillOpacity": 8
+          }
+        }
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb"
+          },
+          "refId": "Y1",
+          "query": "from(bucket: \"${INFLUXDB_BUCKET}\")\n  |> range(start: 2022-01-01T00:00:00Z, stop: 2023-01-01T00:00:00Z)\n  |> filter(fn: (r) => r._measurement == \"pellets\" and r._field == \"value\")\n  |> sort(columns: [\"_time\"])\n  |> difference(nonNegative: true)\n  |> cumulativeSum()\n  |> set(key: \"_field\", value: \"2022\")"
+        },
+        {
+          "datasource": {
+            "type": "influxdb"
+          },
+          "refId": "Y2",
+          "query": "from(bucket: \"${INFLUXDB_BUCKET}\")\n  |> range(start: 2023-01-01T00:00:00Z, stop: 2024-01-01T00:00:00Z)\n  |> filter(fn: (r) => r._measurement == \"pellets\" and r._field == \"value\")\n  |> sort(columns: [\"_time\"])\n  |> difference(nonNegative: true)\n  |> cumulativeSum()\n  |> timeShift(duration: -1y)\n  |> set(key: \"_field\", value: \"2023\")"
+        },
+        {
+          "datasource": {
+            "type": "influxdb"
+          },
+          "refId": "Y3",
+          "query": "from(bucket: \"${INFLUXDB_BUCKET}\")\n  |> range(start: 2024-01-01T00:00:00Z, stop: 2025-01-01T00:00:00Z)\n  |> filter(fn: (r) => r._measurement == \"pellets\" and r._field == \"value\")\n  |> sort(columns: [\"_time\"])\n  |> difference(nonNegative: true)\n  |> cumulativeSum()\n  |> timeShift(duration: -2y)\n  |> set(key: \"_field\", value: \"2024\")"
+        },
+        {
+          "datasource": {
+            "type": "influxdb"
+          },
+          "refId": "Y4",
+          "query": "from(bucket: \"${INFLUXDB_BUCKET}\")\n  |> range(start: 2025-01-01T00:00:00Z, stop: 2026-01-01T00:00:00Z)\n  |> filter(fn: (r) => r._measurement == \"pellets\" and r._field == \"value\")\n  |> sort(columns: [\"_time\"])\n  |> difference(nonNegative: true)\n  |> cumulativeSum()\n  |> timeShift(duration: -3y)\n  |> set(key: \"_field\", value: \"2025\")"
+        }
+      ]
+    }
+  ],
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      },
+      {
+        "datasource": {
+          "type": "influxdb"
+        },
+        "enable": true,
+        "hide": false,
+        "iconColor": "#f59e0b",
+        "name": "{{t.grafana_annotation_notes}}",
+        "query": "from(bucket: \"${INFLUXDB_BUCKET}\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._field == \"note\")\n  |> filter(fn: (r) => r._value != \"\")"
+      }
+    ]
+  }
 }
