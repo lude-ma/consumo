@@ -1,0 +1,120 @@
+version: "3.8"
+
+# ---------------------------------------------------------------------------
+# Consumo — Synology Container Manager deployment
+#
+# This is a SINGLE, self-contained compose file (no -f overlay, no custom
+# env file name) because Container Manager's "Project" feature only
+# recognizes a literal docker-compose.yml + .env in the same folder.
+#
+# Setup:
+#   1. Copy this whole folder (deploy/synology/) PLUS ../../apps,
+#      ../../config, ../../infrastructure onto the NAS, keeping the same
+#      relative directory structure (e.g. via File Station or git clone).
+#   2. cp .env.example .env   — then fill in real secrets in .env
+#   3. Container Manager → Project → Create → select this folder
+#      It will auto-detect docker-compose.yml and .env.
+#   4. Build, then Start.
+#
+# After this initial setup, containers restart automatically on every NAS
+# reboot via the `restart: unless-stopped` policy — no CLI, no make, no
+# manual action needed.
+#
+# Ports: Web 8100 | Grafana 3000 | InfluxDB 8086 | API internal only
+# ---------------------------------------------------------------------------
+
+services:
+  influxdb:
+    image: influxdb:2.7
+    container_name: consumo-influxdb
+    restart: unless-stopped
+    mem_limit: 512m
+    ports:
+      - "8086:8086"
+    volumes:
+      - influxdb-data:/var/lib/influxdb2
+      - influxdb-config:/etc/influxdb2
+    environment:
+      - DOCKER_INFLUXDB_INIT_MODE=setup
+      - DOCKER_INFLUXDB_INIT_USERNAME=${INFLUXDB_ADMIN_USER:-admin}
+      - DOCKER_INFLUXDB_INIT_PASSWORD=${INFLUXDB_ADMIN_PASSWORD}
+      - DOCKER_INFLUXDB_INIT_ORG=${INFLUXDB_ORG:-home}
+      - DOCKER_INFLUXDB_INIT_BUCKET=${INFLUXDB_BUCKET:-energy}
+      - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=${INFLUXDB_TOKEN}
+    networks:
+      - consumo-net
+
+  grafana:
+    image: grafana/grafana:10.4.0
+    container_name: consumo-grafana
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ../../infrastructure/grafana/provisioning:/etc/grafana/provisioning
+      - ../../infrastructure/grafana/dashboards:/var/lib/grafana/dashboards
+    environment:
+      - GF_SECURITY_ADMIN_USER=${GRAFANA_ADMIN_USER:-admin}
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_ADMIN_PASSWORD}
+      - GF_USERS_ALLOW_SIGN_UP=false
+      - GF_SERVER_ROOT_URL=http://localhost:3000
+      - INFLUXDB_TOKEN=${INFLUXDB_TOKEN}
+      - INFLUXDB_ORG=${INFLUXDB_ORG:-home}
+      - INFLUXDB_BUCKET=${INFLUXDB_BUCKET:-energy}
+    depends_on:
+      - influxdb
+    networks:
+      - consumo-net
+
+  api:
+    build:
+      context: ../../apps
+      dockerfile: api/Dockerfile
+    container_name: consumo-api
+    restart: unless-stopped
+    mem_limit: 256m
+    # Not exposed externally — only reachable by web/grafana inside consumo-net.
+    # If you need to call it directly from outside (e.g. for debugging),
+    # temporarily add a `ports:` entry here.
+    volumes:
+      - ../../config:/config:ro
+    environment:
+      - INFLUXDB_URL=http://influxdb:8086
+      - INFLUXDB_TOKEN=${INFLUXDB_TOKEN}
+      - INFLUXDB_ORG=${INFLUXDB_ORG:-home}
+      - INFLUXDB_BUCKET=${INFLUXDB_BUCKET:-energy}
+      - API_KEYS=${API_KEYS}
+    depends_on:
+      - influxdb
+    networks:
+      - consumo-net
+
+  web:
+    build:
+      context: ../../apps
+      dockerfile: web/Dockerfile
+    container_name: consumo-web
+    restart: unless-stopped
+    mem_limit: 256m
+    ports:
+      - "8100:8100"
+    volumes:
+      - ../../config:/config:ro
+    environment:
+      - API_URL=http://api:8200
+      - API_KEY=${API_KEY_WEB}
+      - SECRET_KEY=${SECRET_KEY}
+    depends_on:
+      - api
+    networks:
+      - consumo-net
+
+volumes:
+  influxdb-data:
+  influxdb-config:
+  grafana-data:
+
+networks:
+  consumo-net:
+    driver: bridge

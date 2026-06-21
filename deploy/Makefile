@@ -1,30 +1,13 @@
-PROD_PROJECT = consumo-prod
 DEV_PROJECT  = consumo-dev
-PROD_FILES   = -f docker-compose.yml -f docker-compose.prod.yml
 DEV_FILES    = -f docker-compose.yml -f docker-compose.dev.yml
 
-.PHONY: prod-up prod-down prod-logs prod-ps prod-restart \
-        dev-up dev-down dev-logs dev-ps dev-restart \
+.PHONY: dev-up dev-down dev-logs dev-ps dev-restart \
         pi-up pi-down pi-logs pi-discover pi-history \
-        build-dashboards help
+        synology-validate \
+        build-dashboards build-dashboards-dev build-dashboards-synology \
+        help
 
-# ── Prod ────────────────────────────────────────────────────────────────────
-prod-up:
-	docker compose -p $(PROD_PROJECT) $(PROD_FILES) --env-file .env.prod up -d --build
-
-prod-down:
-	docker compose -p $(PROD_PROJECT) $(PROD_FILES) down
-
-prod-logs:
-	docker compose -p $(PROD_PROJECT) $(PROD_FILES) logs -f
-
-prod-ps:
-	docker compose -p $(PROD_PROJECT) $(PROD_FILES) ps
-
-prod-restart:
-	docker compose -p $(PROD_PROJECT) $(PROD_FILES) restart
-
-# ── Dev ─────────────────────────────────────────────────────────────────────
+# ── Dev (runs on your laptop, via Docker CLI) ───────────────────────────────
 dev-up:
 	docker compose -p $(DEV_PROJECT) $(DEV_FILES) --env-file .env.dev up -d --build
 
@@ -40,6 +23,18 @@ dev-ps:
 dev-restart:
 	docker compose -p $(DEV_PROJECT) $(DEV_FILES) restart
 
+# ── Prod (Synology NAS via Container Manager — see deploy/synology/) ───────
+# There are no "prod-*" make targets: prod runs as a Container Manager
+# Project on the NAS, where `make` isn't installed. Deployment happens
+# through the Container Manager GUI (Build / Start / Stop / Restart).
+# `restart: unless-stopped` means containers survive NAS reboots automatically
+# — no make, no CLI action needed for normal operation.
+#
+# This target only *validates* the Synology compose file locally before you
+# upload it — catches YAML/syntax errors early.
+synology-validate:
+	docker compose -f synology/docker-compose.yml --env-file synology/.env.example config > /dev/null \
+		&& echo "✓ deploy/synology/docker-compose.yml is valid"
 
 # ── Pi Scanner ───────────────────────────────────────────────────────────────
 PI_FILES = -f docker-compose.pi.yml
@@ -60,22 +55,32 @@ pi-history:
 	docker compose $(PI_FILES) --env-file .env.pi run --rm scanner python main.py --mode history --history-mode year
 
 # ── Dashboards ──────────────────────────────────────────────────────────────
-build-dashboards-prod:
-	python3 ../infrastructure/grafana/dashboard_template/build_dashboards.py --env .env.prod
+# Run after creating/editing deploy/synology/.env (uses its INFLUXDB_BUCKET)
+build-dashboards-synology:
+	python3 ../infrastructure/grafana/dashboard_template/build_dashboards.py --env synology/.env
 
 build-dashboards-dev:
 	python3 ../infrastructure/grafana/dashboard_template/build_dashboards.py --env .env.dev
 
-build-dashboards: build-dashboards-prod
+build-dashboards: build-dashboards-synology
 
 # ── Help ────────────────────────────────────────────────────────────────────
 help:
 	@echo ""
 	@echo "  Consumo"
 	@echo ""
-	@echo "  Prod  - Web 8100 | Grafana 3000 | InfluxDB 8086"
-	@echo "    make prod-up      make prod-down      make prod-logs"
-	@echo ""
-	@echo "  Dev   - Web 8101 | Grafana 3001 | InfluxDB 8087 | API 8201"
+	@echo "  Dev   — Web 8101 | Grafana 3001 | InfluxDB 8087 | API 8201"
 	@echo "    make dev-up       make dev-down       make dev-logs"
+	@echo ""
+	@echo "  Prod  — deployed via Synology Container Manager, see deploy/synology/README.md"
+	@echo "    make synology-validate   (lint the compose file before uploading)"
+	@echo ""
+	@echo "  Pi Scanner (run on the Pi)"
+	@echo "    make pi-up           make pi-down         make pi-logs"
+	@echo "    make pi-discover     (find TP357 MAC addresses)"
+	@echo "    make pi-history      (import 1 year of history)"
+	@echo ""
+	@echo "  Dashboards"
+	@echo "    make build-dashboards-synology   (uses deploy/synology/.env)"
+	@echo "    make build-dashboards-dev        (uses .env.dev)"
 	@echo ""
