@@ -36,16 +36,16 @@ make pi-logs
 
 ## Adding a new sensor
 
-1. `make pi-discover` — find MAC address
-2. `config/sensors.yml` — add sensor entry
-3. `config/meters.yml` — add sensor_id under `sensors:`
-4. `apps/web/i18n/de.json` + `en.json` — add label
-5. `make pi-up` — restart (config is read on startup)
+1. `make pi-discover` - find MAC address
+2. `config/sensors.yml` - add sensor entry
+3. `config/meters.yml` - add sensor_id under `sensors:`
+4. `apps/web/i18n/de.json` + `en.json` - add label
+5. `make pi-up` - restart (config is read on startup)
 
 ## Offline buffering
 
-If the Consumo API (or the NAS InfluxDB behind it) is unreachable — e.g. during
-a NAS reboot or network outage — readings are **not lost**. They're queued
+If the Consumo API (or the NAS InfluxDB behind it) is unreachable - e.g. during
+a NAS reboot or network outage - readings are **not lost**. They're queued
 locally in a SQLite database (`/data/queue.db`, persisted via the
 `scanner-data` Docker volume) and automatically retried every
 `retry_interval` seconds (see `config/sensors.yml`, default 30s) once the API
@@ -57,7 +57,7 @@ docker exec consumo-scanner python -c \
   "from offline_queue import ReadingQueue; print(ReadingQueue().count())"
 ```
 
-4xx errors (bad data) are logged and dropped — only network/server errors are
+4xx errors (bad data) are logged and dropped - only network/server errors are
 queued, since retrying malformed data won't help.
 
 ## Troubleshooting

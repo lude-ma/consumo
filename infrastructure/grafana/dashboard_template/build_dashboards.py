@@ -26,7 +26,7 @@ OUTPUT_DIR    = Path(__file__).parent.parent / "dashboards"
 
 
 # ---------------------------------------------------------------------------
-# .env loader — no external dependencies
+# .env loader - no external dependencies
 # ---------------------------------------------------------------------------
 
 def load_env_file(path: Path) -> dict[str, str]:
@@ -65,7 +65,7 @@ def render_env(template: str, env: dict[str, str]) -> str:
         key = match.group(1)
         val = env.get(key) or os.environ.get(key)
         if val is None:
-            print(f"  WARNING: missing env var '{key}' — keeping placeholder", file=sys.stderr)
+            print(f"  WARNING: missing env var '{key}' - keeping placeholder", file=sys.stderr)
             return match.group(0)
         return val
 
@@ -96,7 +96,7 @@ def build(env_file: Path | None = None):
                 print(f"Loaded env from {candidate.resolve()}")
                 break
         else:
-            print("No .env file found — will use environment variables for ${VAR} substitution")
+            print("No .env file found - will use environment variables for ${VAR} substitution")
 
     template = TEMPLATE_FILE.read_text("utf-8")
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)

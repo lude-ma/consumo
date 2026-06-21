@@ -1,5 +1,5 @@
 """
-queue.py — Local SQLite buffer for sensor readings.
+queue.py - Local SQLite buffer for sensor readings.
 
 If the Consumo API (or the NAS InfluxDB behind it) is unreachable, readings
 are queued here instead of being lost. A background task periodically
@@ -8,7 +8,7 @@ attempts to flush the queue once connectivity returns.
 Design goals:
   - Zero external dependencies (sqlite3 is stdlib)
   - Survives container restarts (queue.db on a mounted volume)
-  - Simple FIFO per sensor — order doesn't matter much for sensor data,
+  - Simple FIFO per sensor - order doesn't matter much for sensor data,
     but we preserve it anyway for cleaner history.
 """
 

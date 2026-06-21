@@ -33,9 +33,9 @@ Grafana (3000) ──┘                            ▲
 ```
 consumo/
 ├── apps/
-│   ├── common/          # Shared models (METERS, MeterType) — pip package
-│   ├── api/             # REST API — InfluxDB abstraction
-│   └── web/             # Web UI — pure API consumer
+│   ├── common/          # Shared models (METERS, MeterType) - pip package
+│   ├── api/             # REST API - InfluxDB abstraction
+│   └── web/             # Web UI - pure API consumer
 ├── deploy/              # Docker Compose, Makefile, .env.*
 └── infrastructure/
     └── grafana/         # Datasource + Dashboard provisioning
@@ -70,13 +70,13 @@ make dev-up
 | Service   | Prod | Dev  |
 |-----------|------|------|
 | Web UI    | 8100 | 8101 |
-| REST API  | —    | 8201 |
+| REST API  | -    | 8201 |
 | Grafana   | 3000 | 3001 |
 | InfluxDB  | 8086 | 8087 |
 
 The API is not exposed externally in prod!
 
-## API — Quick reference
+## API - Quick reference
 
 Interactive docs (Dev): http://localhost:8201/docs
 
@@ -99,5 +99,5 @@ curl -H "X-API-Key: dev-key" http://localhost:8201/api/v1/meters/strom/stats
 
 ## Add a new meter
 
-`apps/common/consumo_common/models.py` — Append an entry in `METERS`.
+`apps/common/consumo_common/models.py` - Append an entry in `METERS`.
 API and Web UI recognize it automatically after the next build.

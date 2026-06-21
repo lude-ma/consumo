@@ -20,7 +20,7 @@ services:
 
   api:
     container_name: consumo-prod-api
-    # Not exposed externally — only reachable by web and grafana inside consumo-net
+    # Not exposed externally - only reachable by web and grafana inside consumo-net
     deploy:
       resources:
         limits:

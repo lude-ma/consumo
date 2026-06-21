@@ -179,7 +179,7 @@
     {
       "id": 5,
       "type": "barchart",
-      "title": "{{t.grafana_section_electricity}} — {{t.grafana_monthly_by_year}}",
+      "title": "{{t.grafana_section_electricity}} - {{t.grafana_monthly_by_year}}",
       "gridPos": {
         "x": 0,
         "y": 4,
@@ -217,7 +217,7 @@
     {
       "id": 6,
       "type": "timeseries",
-      "title": "{{t.grafana_section_electricity}} — {{t.grafana_cumulative_year}}",
+      "title": "{{t.grafana_section_electricity}} - {{t.grafana_cumulative_year}}",
       "gridPos": {
         "x": 12,
         "y": 4,
@@ -443,7 +443,7 @@
     {
       "id": 15,
       "type": "barchart",
-      "title": "{{t.grafana_section_water}} — {{t.grafana_monthly_by_year}}",
+      "title": "{{t.grafana_section_water}} - {{t.grafana_monthly_by_year}}",
       "gridPos": {
         "x": 0,
         "y": 16,
@@ -481,7 +481,7 @@
     {
       "id": 16,
       "type": "timeseries",
-      "title": "{{t.grafana_section_water}} — {{t.grafana_cumulative_year}}",
+      "title": "{{t.grafana_section_water}} - {{t.grafana_cumulative_year}}",
       "gridPos": {
         "x": 12,
         "y": 16,
@@ -549,7 +549,7 @@
       },
       "options": {
         "mode": "markdown",
-        "content": "## {{t.grafana_section_pellets}} &nbsp;`{{t.grafana_type_storage}}` — {{t.grafana_level_history}}, {{t.grafana_total_refilled}} & {{t.grafana_total_consumed}}"
+        "content": "## {{t.grafana_section_pellets}} &nbsp;`{{t.grafana_type_storage}}` - {{t.grafana_level_history}}, {{t.grafana_total_refilled}} & {{t.grafana_total_consumed}}"
       }
     },
     {
@@ -707,7 +707,7 @@
     {
       "id": 25,
       "type": "barchart",
-      "title": "{{t.grafana_section_pellets}} — {{t.grafana_monthly_by_year}}",
+      "title": "{{t.grafana_section_pellets}} - {{t.grafana_monthly_by_year}}",
       "gridPos": {
         "x": 0,
         "y": 28,
@@ -749,7 +749,7 @@
     {
       "id": 27,
       "type": "timeseries",
-      "title": "{{t.grafana_section_pellets}} — {{t.grafana_yearly_overlaid}}",
+      "title": "{{t.grafana_section_pellets}} - {{t.grafana_yearly_overlaid}}",
       "gridPos": {
         "x": 0,
         "y": 36,

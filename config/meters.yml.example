@@ -1,5 +1,5 @@
 # ---------------------------------------------------------------------------
-# Consumo — Meter & Sensor Registry
+# Consumo - Meter & Sensor Registry
 #
 # meter_type:
 #   counter  – monotonically increasing absolute reading (electricity, water)
@@ -30,7 +30,7 @@ meters:
     unit: kg
 
 sensors:
-  # ThermoPro TP357 — one entry per physical device
+  # ThermoPro TP357 - one entry per physical device
   # Add/remove entries here; no code changes needed.
   wohnzimmer:
     icon: "🌡️"

@@ -179,7 +179,7 @@
     {
       "id": 5,
       "type": "barchart",
-      "title": "⚡ Electricity — Monthly consumption by year",
+      "title": "⚡ Electricity - Monthly consumption by year",
       "gridPos": {
         "x": 0,
         "y": 4,
@@ -217,7 +217,7 @@
     {
       "id": 6,
       "type": "timeseries",
-      "title": "⚡ Electricity — Cumulative yearly consumption (overlaid)",
+      "title": "⚡ Electricity - Cumulative yearly consumption (overlaid)",
       "gridPos": {
         "x": 12,
         "y": 4,
@@ -443,7 +443,7 @@
     {
       "id": 15,
       "type": "barchart",
-      "title": "💧 Water — Monthly consumption by year",
+      "title": "💧 Water - Monthly consumption by year",
       "gridPos": {
         "x": 0,
         "y": 16,
@@ -481,7 +481,7 @@
     {
       "id": 16,
       "type": "timeseries",
-      "title": "💧 Water — Cumulative yearly consumption (overlaid)",
+      "title": "💧 Water - Cumulative yearly consumption (overlaid)",
       "gridPos": {
         "x": 12,
         "y": 16,
@@ -549,7 +549,7 @@
       },
       "options": {
         "mode": "markdown",
-        "content": "## 🪵 Pellets &nbsp;`Storage level` — Fill level history, ▲ Total refilled & ▼ Total consumed"
+        "content": "## 🪵 Pellets &nbsp;`Storage level` - Fill level history, ▲ Total refilled & ▼ Total consumed"
       }
     },
     {
@@ -707,7 +707,7 @@
     {
       "id": 25,
       "type": "barchart",
-      "title": "🪵 Pellets — Monthly consumption by year",
+      "title": "🪵 Pellets - Monthly consumption by year",
       "gridPos": {
         "x": 0,
         "y": 28,
@@ -749,7 +749,7 @@
     {
       "id": 27,
       "type": "timeseries",
-      "title": "🪵 Pellets — Yearly consumption (overlaid)",
+      "title": "🪵 Pellets - Yearly consumption (overlaid)",
       "gridPos": {
         "x": 0,
         "y": 36,

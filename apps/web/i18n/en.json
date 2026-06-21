@@ -50,7 +50,7 @@
   "back": "← Back",
   "flash_unknown_meter": "Unknown meter.",
   "flash_saved": "✓ {label} saved: {value} {unit}",
-  "flash_invalid_value": "Invalid value — please enter a number.",
+  "flash_invalid_value": "Invalid value - please enter a number.",
   "flash_api_error": "API error: {message}",
   "flash_load_error": "Error loading data.",
   "grafana_annotation_notes": "Comment",

@@ -1,6 +1,6 @@
 FROM python:3.12-slim
 
-# Install BlueZ and DBus — required for bleak on Linux
+# Install BlueZ and DBus - required for bleak on Linux
 RUN apt-get update && apt-get install -y --no-install-recommends \
     bluez \
     dbus \

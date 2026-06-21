@@ -1,5 +1,5 @@
 """
-tp357_parser.py — Parse TP357 BLE advertisement manufacturer data.
+tp357_parser.py - Parse TP357 BLE advertisement manufacturer data.
 
 Advertisement format (Manufacturer Data, company ID 0x0001):
   Bytes  0-1:  Company ID (little-endian, usually 0x0001)

@@ -179,7 +179,7 @@
     {
       "id": 5,
       "type": "barchart",
-      "title": "⚡ Strom — Monatsverbrauch je Jahr",
+      "title": "⚡ Strom - Monatsverbrauch je Jahr",
       "gridPos": {
         "x": 0,
         "y": 4,
@@ -217,7 +217,7 @@
     {
       "id": 6,
       "type": "timeseries",
-      "title": "⚡ Strom — Kumulierter Jahresverbrauch (überlagert)",
+      "title": "⚡ Strom - Kumulierter Jahresverbrauch (überlagert)",
       "gridPos": {
         "x": 12,
         "y": 4,
@@ -443,7 +443,7 @@
     {
       "id": 15,
       "type": "barchart",
-      "title": "💧 Wasser — Monatsverbrauch je Jahr",
+      "title": "💧 Wasser - Monatsverbrauch je Jahr",
       "gridPos": {
         "x": 0,
         "y": 16,
@@ -481,7 +481,7 @@
     {
       "id": 16,
       "type": "timeseries",
-      "title": "💧 Wasser — Kumulierter Jahresverbrauch (überlagert)",
+      "title": "💧 Wasser - Kumulierter Jahresverbrauch (überlagert)",
       "gridPos": {
         "x": 12,
         "y": 16,
@@ -549,7 +549,7 @@
       },
       "options": {
         "mode": "markdown",
-        "content": "## 🪵 Pellets &nbsp;`Lagerbestand` — Füllstandsverlauf, ▲ Gesamt befüllt & ▼ Gesamt verbraucht"
+        "content": "## 🪵 Pellets &nbsp;`Lagerbestand` - Füllstandsverlauf, ▲ Gesamt befüllt & ▼ Gesamt verbraucht"
       }
     },
     {
@@ -707,7 +707,7 @@
     {
       "id": 25,
       "type": "barchart",
-      "title": "🪵 Pellets — Monatsverbrauch je Jahr",
+      "title": "🪵 Pellets - Monatsverbrauch je Jahr",
       "gridPos": {
         "x": 0,
         "y": 28,
@@ -749,7 +749,7 @@
     {
       "id": 27,
       "type": "timeseries",
-      "title": "🪵 Pellets — Jahresverbrauch überlagert",
+      "title": "🪵 Pellets - Jahresverbrauch überlagert",
       "gridPos": {
         "x": 0,
         "y": 36,

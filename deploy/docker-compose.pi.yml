@@ -1,7 +1,7 @@
 version: "3.8"
 
 # ---------------------------------------------------------------------------
-# Consumo — Raspberry Pi Scanner
+# Consumo - Raspberry Pi Scanner
 #
 # Runs on the Pi, connects to the Consumo API on the NAS.
 #
@@ -31,7 +31,7 @@ services:
       - CONSUMO_QUEUE_DB=/data/queue.db
     volumes:
       - ../config:/config:ro
-      - scanner-data:/data        # offline queue — survives container restarts
+      - scanner-data:/data        # offline queue - survives container restarts
     command: ["python", "main.py", "--mode", "scan"]
 
 volumes:

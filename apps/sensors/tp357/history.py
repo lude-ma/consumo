@@ -1,5 +1,5 @@
 """
-history.py — Active GATT connection to fetch stored history from TP357 sensors.
+history.py - Active GATT connection to fetch stored history from TP357 sensors.
 
 The TP357 stores up to 1 year of data accessible via three GATT characteristics:
   - "day"  : minute-by-minute, last 24 hours
@@ -117,7 +117,7 @@ async def fetch_history(
                 raw_records.append((temp, humidity))
             i += 3
 
-    # Reconstruct timestamps — records are newest first, step back by interval
+    # Reconstruct timestamps - records are newest first, step back by interval
     for idx, (temp, humidity) in enumerate(raw_records):
         ts = now - interval * idx
         points.append(HistoryPoint(timestamp=ts, temperature=temp, humidity=humidity))

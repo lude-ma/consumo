@@ -1,5 +1,5 @@
 """
-main.py — TP357 BLE Scanner for Consumo
+main.py - TP357 BLE Scanner for Consumo
 
 Modes:
   scan     (default) Passive advertisement scanning, writes to API every N seconds
@@ -100,7 +100,7 @@ async def scan(cfg: dict, client: ConsumoClient):
     mac_map    = build_mac_map(sensors)
     last_write: dict[str, float] = {}
 
-    logger.info(f"Starting passive scan — {len(mac_map)} sensors registered, "
+    logger.info(f"Starting passive scan - {len(mac_map)} sensors registered, "
                 f"write interval={interval}s")
 
     # Wait for API to be ready
@@ -150,7 +150,7 @@ async def _write(client: ConsumoClient, sensor_id: str, reading: TP357Reading):
         logger.info(f"{sensor_id}: {reading.temperature}°C  {reading.humidity}%RH  "
                     f"bat={reading.battery}%")
     else:
-        logger.warning(f"{sensor_id}: failed to write reading — will retry next interval")
+        logger.warning(f"{sensor_id}: failed to write reading - will retry next interval")
 
 
 # ---------------------------------------------------------------------------
@@ -185,7 +185,7 @@ async def history(cfg: dict, client: ConsumoClient, mode: str = "year"):
         logger.info(f"{sensor_id}: {written}/{len(points)} points written")
         total += written
 
-    logger.info(f"History import complete — {total} total points written")
+    logger.info(f"History import complete - {total} total points written")
 
 
 async def _run_scan_with_flush(cfg: dict, client: ConsumoClient):

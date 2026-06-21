@@ -57,7 +57,7 @@ def get_t() -> dict:
 
 @app.route("/set-lang/<lang>")
 def set_lang(lang: str):
-    """Language switcher — sets cookie and redirects back."""
+    """Language switcher - sets cookie and redirects back."""
     referrer = request.referrer or url_for("index")
     if lang not in SUPPORTED:
         return redirect(referrer)
@@ -71,7 +71,7 @@ def set_lang(lang: str):
 # ---------------------------------------------------------------------------
 
 def api(method: str, path: str, **kwargs):
-    """Thin wrapper around requests — injects auth header, raises on HTTP errors."""
+    """Thin wrapper around requests - injects auth header, raises on HTTP errors."""
     url = f"{API_URL}{path}"
     headers = {"X-API-Key": API_KEY, **(kwargs.pop("headers", {}))}
     resp = http.request(method, url, headers=headers, timeout=10, **kwargs)

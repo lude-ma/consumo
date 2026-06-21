@@ -1,5 +1,5 @@
 """
-api_client.py — Async client for the Consumo REST API with offline buffering.
+api_client.py - Async client for the Consumo REST API with offline buffering.
 
 If a write fails (NAS/InfluxDB unreachable), the reading is queued locally
 in SQLite instead of being dropped. A background task periodically retries
@@ -39,10 +39,10 @@ class ConsumoClient:
                 resp.raise_for_status()
                 return True
         except httpx.HTTPStatusError as e:
-            # 4xx = bad data, retrying won't help — log and drop
+            # 4xx = bad data, retrying won't help - log and drop
             if 400 <= e.response.status_code < 500:
                 logger.error(f"Rejected by API for {sensor_id} ({e.response.status_code}): "
-                            f"{e.response.text} — dropping, not queuing")
+                            f"{e.response.text} - dropping, not queuing")
                 return True  # treat as "handled" so caller doesn't queue a bad payload
             logger.warning(f"Server error for {sensor_id}: {e.response.status_code}")
         except httpx.RequestError as e:
@@ -97,10 +97,10 @@ class ConsumoClient:
                 continue
 
             if not await self.health():
-                logger.debug(f"API still unreachable — {pending} reading(s) remain queued")
+                logger.debug(f"API still unreachable - {pending} reading(s) remain queued")
                 continue
 
-            logger.info(f"API reachable — flushing {pending} queued reading(s)")
+            logger.info(f"API reachable - flushing {pending} queued reading(s)")
             items = self.queue.pending(limit=100)
             flushed = 0
             for item in items:
@@ -113,7 +113,7 @@ class ConsumoClient:
                     self.queue.remove(item.id)
                     flushed += 1
                 else:
-                    # Stop on first failure — likely API dropped again, retry next cycle
+                    # Stop on first failure - likely API dropped again, retry next cycle
                     break
 
             if flushed:

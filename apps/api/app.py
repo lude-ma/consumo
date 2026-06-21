@@ -356,7 +356,7 @@ def create_sensor_reading(sensor_id: str, body: MultiReadingIn) -> Response[Mult
 
     sensor = SENSORS[sensor_id]
 
-    # Warn about unknown fields but don't reject — allows forward-compat
+    # Warn about unknown fields but don't reject - allows forward-compat
     unknown = set(body.values) - set(sensor.fields)
     if unknown:
         logger.warning(f"Sensor '{sensor_id}' received unknown fields: {unknown}")

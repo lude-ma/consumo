@@ -1,9 +1,9 @@
 """
-Consumo — shared meter/sensor registry.
+Consumo - shared meter/sensor registry.
 
 The source of truth is config/meters.yml at the repo root.
 This module loads and validates it, exposing METERS and SENSORS dicts
-that the API and Web UI consume — identical interface to the old hardcoded version.
+that the API and Web UI consume - identical interface to the old hardcoded version.
 """
 
 from __future__ import annotations
@@ -55,7 +55,7 @@ class SensorMeta:
     fields:      dict[str, str]     # field_name → unit
 
 
-# Icons for meter types — language-neutral, used by templates
+# Icons for meter types - language-neutral, used by templates
 METER_TYPE_ICONS: dict[MeterType, str] = {
     MeterType.COUNTER:     "📟",
     MeterType.STORAGE:     "🗄️",
@@ -128,18 +128,18 @@ def _load(path: Path) -> tuple[dict[str, MeterMeta], dict[str, SensorMeta]]:
 
 
 # ---------------------------------------------------------------------------
-# Module-level exports — loaded once at import time
+# Module-level exports - loaded once at import time
 # ---------------------------------------------------------------------------
 
 _config_path = _find_config()
 METERS, SENSORS = _load(_config_path)
 
-# Combined view — useful for iteration in templates
+# Combined view - useful for iteration in templates
 ALL_METERS: dict[str, MeterMeta | SensorMeta] = {**METERS, **SENSORS}
 
 
 def reload() -> None:
-    """Reload config from disk — useful in tests or after hot-edits."""
+    """Reload config from disk - useful in tests or after hot-edits."""
     global METERS, SENSORS, ALL_METERS
     METERS, SENSORS = _load(_config_path)
     ALL_METERS = {**METERS, **SENSORS}
