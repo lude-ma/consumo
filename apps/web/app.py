@@ -130,7 +130,7 @@ def enter(meter: str):
             flash(t["flash_invalid_value"], "error")
         except http.exceptions.HTTPError as e:
             body = e.response.json() if e.response else {}
-            flash(t["flash_api_error"].format(message=body.get("message", str(e))), "error")
+            flash(t["flash_api_error"].format(message=body.get("detail") or body.get("message") or str(e)), "error")
         except Exception as e:
             logger.error(f"Unexpected error: {e}")
             flash(t["flash_api_error"].format(message=str(e)), "error")
@@ -158,7 +158,7 @@ def history(meter: str):
         stats = api("GET", f"/api/v1/meters/{meter}/stats").get("data", {})
     except http.exceptions.HTTPError as e:
         body = e.response.json() if e.response else {}
-        flash(t["flash_api_error"].format(message=body.get("message", str(e))), "error")
+        flash(t["flash_api_error"].format(message=body.get("detail") or body.get("message") or str(e)), "error")
     except Exception as e:
         logger.error(f"History fetch error: {e}")
         flash(t["flash_load_error"], "error")
