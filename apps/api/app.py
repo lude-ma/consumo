@@ -193,7 +193,7 @@ def create_reading(meter: str, body: ReadingIn) -> Response[ReadingCreated]:
                 .tag("unit", meta.unit)
                 .tag("meter_type", meta.meter_type.value)
                 .field("value", body.value)
-                .time(ts, WritePrecision.SECONDS)
+                .time(ts, WritePrecision.S)
             )
             if body.note:
                 point = point.field("note", body.note.strip())
@@ -366,7 +366,7 @@ def create_sensor_reading(sensor_id: str, body: MultiReadingIn) -> Response[Mult
     try:
         with get_client() as client:
             write_api = client.write_api(write_options=SYNCHRONOUS)
-            point = Point(sensor_id).tag("sensor_type", sensor.sensor_type).time(ts, WritePrecision.SECONDS)
+            point = Point(sensor_id).tag("sensor_type", sensor.sensor_type).time(ts, WritePrecision.S)
             for field, val in body.values.items():
                 point = point.field(field, float(val))
             if body.note:
