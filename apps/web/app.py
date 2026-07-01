@@ -1,8 +1,10 @@
-import os
+from datetime import datetime as _dt
 import json
 import logging
-import requests as http
+import os
 from pathlib import Path
+
+import requests as http
 from flask import Flask, render_template, request, redirect, url_for, flash, make_response
 
 from consumo_common.models import METERS, METER_TYPE_ICONS
@@ -119,8 +121,10 @@ def enter(meter: str):
             if note:
                 payload["note"] = note
             if date_str:
-                # HTML datetime-local → ISO 8601 UTC
-                payload["timestamp"] = date_str + ":00Z"
+                # datetime-local is converted to UTC directly in the form.
+                # No need to convert it for the API.
+                utc_dt = _dt.fromisoformat(date_str.replace("Z", "+00:00"))
+                payload["timestamp"] = utc_dt.strftime("%Y-%m-%dT%H:%M:%SZ")
 
             api("POST", f"/api/v1/meters/{meter}/readings", json=payload)
             flash(t["flash_saved"].format(label=t[f"meter_{meter}_label"], value=value, unit=meta.unit), "success")

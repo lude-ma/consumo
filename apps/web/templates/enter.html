@@ -80,7 +80,8 @@
 
     <div class="field">
       <label>{{ t.enter_label_datetime }}</label>
-      <input type="datetime-local" name="date" id="dateInput">
+      <input type="datetime-local" id="dateInputLocal">
+      <input type="hidden" name="date" id="dateInputUtc">
       <p class="hint">{{ t.enter_hint_datetime }}</p>
     </div>
 
@@ -98,8 +99,16 @@
 </div>
 
 <script>
+  document.getElementById("dateInputLocal").closest("form").addEventListener("submit", function () {
+    const local = document.getElementById("dateInputLocal").value;
+    const utcField = document.getElementById("dateInputUtc");
+    utcField.value = local ? new Date(local).toISOString() : "";
+  });
+</script>
+
+<script>
   const d = new Date(), pad = n => String(n).padStart(2,'0');
-  document.getElementById('dateInput').value =
+  document.getElementById('dateInputLocal').value =
     `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
 </script>
 {% endblock %}
