@@ -15,8 +15,26 @@ logger = logging.getLogger(__name__)
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY", "dev-secret-key")
 
-API_URL = os.environ.get("API_URL", "http://localhost:8200")
-API_KEY = os.environ.get("API_KEY", "")
+API_URL      = os.environ.get("API_URL", "http://localhost:8200")
+API_KEY      = os.environ.get("API_KEY", "")
+GRAFANA_PORT = os.environ.get("GRAFANA_PORT", "3000")
+
+
+# ---------------------------------------------------------------------------
+# Template context — available in every template without explicit passing
+# ---------------------------------------------------------------------------
+
+@app.context_processor
+def inject_globals():
+    """
+    Inject variables into every template context automatically.
+    grafana_url is built from the browser's current host + GRAFANA_PORT,
+    so it works regardless of whether you access via localhost, NAS-IP, or hostname.
+    """
+    return {
+        "grafana_port": GRAFANA_PORT,
+    }
+
 
 # ---------------------------------------------------------------------------
 # i18n

@@ -59,7 +59,7 @@
     <a href="/" class="logo">{{ t.app_name }}<span>⚡</span></a>
     <div class="nav-links">
       <a href="/">{{ t.nav_overview }}</a>
-      <a href="http://localhost:3000" target="_blank">{{ t.nav_grafana }}</a>
+      <a href="#" id="grafana-link" data-port="{{ grafana_port }}" target="_blank">{{ t.nav_grafana }}</a>
     </div>
     <div class="lang-switcher">
       {% for lang in supported_langs %}
@@ -80,5 +80,12 @@
     {% endwith %}
     {% block content %}{% endblock %}
   </main>
+
+  <script>
+    (function() {
+      const el = document.getElementById("grafana-link");
+      if (el) el.href = window.location.protocol + "//" + window.location.hostname + ":" + el.dataset.port;
+    })();
+  </script>
 </body>
 </html>
