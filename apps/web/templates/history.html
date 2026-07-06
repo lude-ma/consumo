@@ -69,7 +69,7 @@
   <tbody>
     {% for row in rows %}
     <tr>
-      <td>{{ row.timestamp[:16] | replace("T", " ") }}</td>
+      <td><span class="local-time" data-utc="{{ row.timestamp }}">{{ row.timestamp[:16] | replace("T", " ") }}</span></td>
       <td><span class="val">{{ row.value | round(3) }} {{ row.unit }}</span></td>
       <td>{% if row.note %}<span class="note-badge">{{ row.note }}</span>{% else %}–{% endif %}</td>
     </tr>
@@ -82,4 +82,16 @@
   <p>{{ t.history_empty }}</p>
 </div>
 {% endif %}
+
+
+<script>
+  document.querySelectorAll(".local-time").forEach(el => {
+    const d = new Date(el.dataset.utc);
+    if (isNaN(d)) return;
+    el.textContent = d.toLocaleString(undefined, {
+      year: "numeric", month: "2-digit", day: "2-digit",
+      hour: "2-digit", minute: "2-digit"
+    });
+  });
+</script>
 {% endblock %}
