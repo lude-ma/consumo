@@ -105,8 +105,40 @@ services:
       - API_URL=http://api:8200
       - API_KEY=${API_KEY_WEB}
       - SECRET_KEY=${SECRET_KEY}
+      - GRAFANA_PORT=${GRAFANA_PORT:-3000}
     depends_on:
       - api
+    networks:
+      - consumo-net
+
+  ntfy:
+    image: binwiederhier/ntfy
+    container_name: consumo-ntfy
+    restart: unless-stopped
+    mem_limit: 64m
+    ports:
+      - "8080:80"
+    volumes:
+      - ntfy-data:/var/lib/ntfy
+    command: serve
+    networks:
+      - consumo-net
+
+  reminders:
+    build:
+      context: ../../apps/reminders
+    container_name: consumo-reminders
+    restart: unless-stopped
+    mem_limit: 64m
+    volumes:
+      - ../../config:/config:ro
+    environment:
+      - NTFY_URL=${NTFY_URL:-http://consumo-ntfy:80}
+      - NTFY_CHANNEL=${NTFY_CHANNEL:-consumo}
+      - NTFY_TOKEN=${NTFY_TOKEN:-}
+      - TZ=${TZ:-Europe/Berlin}
+    depends_on:
+      - ntfy
     networks:
       - consumo-net
 
@@ -114,6 +146,7 @@ volumes:
   influxdb-data:
   influxdb-config:
   grafana-data:
+  ntfy-data:
 
 networks:
   consumo-net:
