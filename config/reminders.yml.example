@@ -1,0 +1,38 @@
+# ---------------------------------------------------------------------------
+# Consumo — Reminder Configuration
+#
+# schedule: standard cron syntax — min hour day month weekday
+#   "0 6 1 * *"    → 1st of every month at 06:00
+#   "0 9 * * 1"    → every Monday at 09:00
+#   "0 18 1,15 * *" → 1st and 15th of every month at 18:00
+#
+# channels: list of notification channels to use
+#   currently supported: ntfy
+# ---------------------------------------------------------------------------
+
+reminders:
+  - name: "Monatliche Ablesung"
+    schedule: "0 6 1 * *"
+    message: "Strom, Wasser und Pellets ablesen nicht vergessen!"
+    channels:
+      - ntfy
+
+  # Example: weekly reminder every Monday
+  # - name: "Wöchentliche Ablesung"
+  #   schedule: "0 9 * * 1"
+  #   message: "Werte erfassen"
+  #   channels:
+  #     - ntfy
+
+ntfy:
+  # URL of your ntfy instance — set in .env as NTFY_URL
+  # The channel name is appended: {url}/{channel}
+  # Example: http://consumo-ntfy:80/consumo
+  url: "${NTFY_URL}"
+  channel: "${NTFY_CHANNEL}"
+  # Optional: token for authenticated ntfy instances
+  # token: "${NTFY_TOKEN}"
+  priority: "default"   # min, low, default, high, urgent
+  tags:                 # emoji tags shown in ntfy app
+    - "bell"
+    - "chart_with_upwards_trend"
