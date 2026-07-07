@@ -31,8 +31,11 @@ def inject_globals():
     grafana_url is built from the browser's current host + GRAFANA_PORT,
     so it works regardless of whether you access via localhost, NAS-IP, or hostname.
     """
+    host = request.host.split(":")[0]   # "192.168.1.100:8100" → "192.168.1.100"
+    grafana_url = f"{request.scheme}://{host}:{GRAFANA_PORT}"
     return {
         "grafana_port": GRAFANA_PORT,
+        "grafana_url": grafana_url
     }
 
 
