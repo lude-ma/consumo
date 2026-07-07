@@ -165,10 +165,7 @@ def main():
 
     scheduler = setup_scheduler(cfg)
 
-    # Log all scheduled jobs for visibility
-    logger.info(f"Scheduled {len(scheduler.get_jobs())} reminder(s):")
-    for job in scheduler.get_jobs():
-        logger.info(f"  • {job.name} — next run: {job.next_run_time}")
+    logger.info(f"Scheduled {len(scheduler.get_jobs())} reminder(s) — next run times shown after start")
 
     try:
         scheduler.start()
