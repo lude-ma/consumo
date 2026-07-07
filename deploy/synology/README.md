@@ -125,3 +125,49 @@ isoliert kopiert wurde.
 `infrastructure/grafana/dashboards/consumo_*.json` muss mitkopiert worden
 sein — diese Dateien werden vorab lokal generiert (`make build-dashboards-synology`)
 und sind Teil des Repos, nicht etwas das auf dem NAS gebaut wird.
+
+## Reminders & ntfy
+
+Consumo sendet Erinnerungen via [ntfy.sh](https://ntfy.sh) — ein kostenloser
+Push-Notification-Service (kein Account nötig).
+
+**Sicherheit:** Es gibt kein klassisches Token-System im Free Tier.
+Der Topic-Name ist dein Passwort — wähle einen langen, zufälligen String:
+```bash
+openssl rand -hex 12   # z.B. a7f3k9x2m4b1c8d5e6f0
+```
+Wer den Topic-Namen nicht kennt, kann weder lesen noch schreiben.
+
+### App einrichten
+
+1. [ntfy für iOS](https://apps.apple.com/app/ntfy/id1625396347) oder
+   [Android](https://play.google.com/store/apps/details?id=io.heckel.ntfy) installieren
+2. In der App: **+** → Server bleibt `https://ntfy.sh` → Topic: dein NTFY_CHANNEL-Wert
+3. iOS: Einstellungen → Datenschutz & Sicherheit → Lokales Netzwerk → ntfy → aktivieren
+   (falls der Subscribe-Dialog "no internet" zeigt)
+
+**Push-Notifications funktionieren auf iOS** über ntfy.sh ohne weiteres Setup —
+ntfy.sh übernimmt die APNs-Weiterleitung.
+
+### Reminders konfigurieren
+
+`config/reminders.yml` — Cron-Schedule und Nachricht anpassen:
+
+```yaml
+reminders:
+  - name: "Monatliche Ablesung"
+    schedule: "0 9 1 * *"    # 1. jeden Monats, 09:00
+    message: "Strom, Wasser und Pellets ablesen!"
+    channels:
+      - ntfy
+```
+
+Nach Änderungen: Container Manager → `consumo-reminders` → **Neustart**
+(kein Rebuild nötig, Config ist als Volume gemountet).
+
+### Reminder sofort testen
+
+```bash
+# Von überall — sendet sofort eine Test-Notification
+curl -d "Test von Consumo" https://ntfy.sh/DEIN_CHANNEL_NAME
+```

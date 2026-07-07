@@ -111,19 +111,6 @@ services:
     networks:
       - consumo-net
 
-  ntfy:
-    image: binwiederhier/ntfy
-    container_name: consumo-ntfy
-    restart: unless-stopped
-    mem_limit: 64m
-    ports:
-      - "8080:80"
-    volumes:
-      - ntfy-data:/var/lib/ntfy
-    command: serve
-    networks:
-      - consumo-net
-
   reminders:
     build:
       context: ../../apps/reminders
@@ -137,8 +124,6 @@ services:
       - NTFY_CHANNEL=${NTFY_CHANNEL:-consumo}
       - NTFY_TOKEN=${NTFY_TOKEN:-}
       - TZ=${TZ:-Europe/Berlin}
-    depends_on:
-      - ntfy
     networks:
       - consumo-net
 
@@ -146,7 +131,6 @@ volumes:
   influxdb-data:
   influxdb-config:
   grafana-data:
-  ntfy-data:
 
 networks:
   consumo-net:
